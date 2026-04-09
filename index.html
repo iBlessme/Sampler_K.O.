@@ -55,6 +55,9 @@
         <button class="btn" id="btnLoop">LOP</button>
         <button class="btn" id="btnRev">REV</button>
       </div>
+      <div class="btn-row">
+        <button class="btn lib-trigger" id="btnLib">LIB</button>
+      </div>
     </div>
     <div class="transport-row">
       <div class="bpm-display"><div class="bpm-num" id="bpmNum">120</div><div class="bpm-label">bpm</div></div>
@@ -163,6 +166,43 @@
     </div>
   </div>
 </div>
+
+<!-- LIBRARY -->
+<div class="lib-overlay" id="libOverlay">
+  <div class="lib-box">
+
+    <div class="lib-header">
+      <div class="lib-tabs">
+        <div class="lib-tab active" id="libTabBuiltin">BUILT-IN</div>
+        <div class="lib-tab" id="libTabLocal">LOCAL</div>
+      </div>
+      <div class="lib-header-actions">
+        <div class="lib-btn" id="libOpenFolder" style="display:none">OPEN FOLDER</div>
+        <div class="lib-btn" id="libRefresh" style="display:none">↺</div>
+        <div class="lib-btn lib-btn-primary" id="libLoadKit" style="display:none">LOAD KIT</div>
+      </div>
+      <div class="lib-close" id="libClose">✕</div>
+    </div>
+
+    <div class="lib-breadcrumb">
+      <span class="lib-bc-root" id="libBcRoot">built-in</span>
+      <span class="lib-bc-sep" id="libBcSep" style="display:none"> ▸ </span>
+      <span class="lib-bc-pack" id="libBcPack"></span>
+    </div>
+
+    <div class="lib-list" id="libList">
+      <div class="lib-status">loading...</div>
+    </div>
+
+    <div class="lib-pad-picker" id="libPadPicker" style="display:none">
+      <div class="lib-picker-label">→ <span id="libPickerFile"></span></div>
+      <div class="lib-picker-grid" id="libPickerGrid"></div>
+      <div class="lib-picker-cancel" id="libPickerCancel">CANCEL</div>
+    </div>
+
+  </div>
+</div>
+<input type="file" id="libFolderInput" webkitdirectory style="display:none">
 
 <div class="toast" id="toast"></div>
 

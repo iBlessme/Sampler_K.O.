@@ -216,6 +216,52 @@ canvas#psWaveCanvas{width:100%;height:38px;display:block;position:relative;z-ind
 .rename-btn.primary{background:var(--orange);border-color:var(--orange-dim)}
 .rename-btn:active{transform:translateY(1px);border-bottom-width:0}
 
+/* LIBRARY */
+.lib-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;align-items:flex-end;justify-content:center;z-index:72;opacity:0;pointer-events:none;transition:opacity .2s;touch-action:none}
+@media(min-width:520px){.lib-overlay{align-items:center}}
+.lib-overlay.show{opacity:1;pointer-events:all}
+.lib-box{background:var(--panel2);border:1px solid var(--border);border-radius:14px 14px 0 0;width:100%;max-width:520px;max-height:88dvh;display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:520px){.lib-box{border-radius:14px;max-height:80vh}}
+
+.lib-header{display:flex;align-items:center;gap:8px;padding:12px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.lib-title{font-size:8px;letter-spacing:.2em;color:var(--orange);text-transform:uppercase;flex:1}
+.lib-header-actions{display:flex;gap:5px}
+.lib-btn{padding:5px 9px;background:var(--pad-base);border:1px solid var(--border);border-radius:3px;border-bottom:2px solid rgba(0,0,0,.5);font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:.1em;color:var(--cream-dim);text-transform:uppercase;cursor:pointer;touch-action:manipulation;white-space:nowrap;transition:all .06s}
+.lib-btn:active{transform:translateY(1px);border-bottom-width:0;color:var(--cream)}
+.lib-btn-primary{background:var(--orange);border-color:var(--orange-dim);color:#fff}
+.lib-btn-primary:active{background:var(--orange-dim)}
+.lib-close{width:24px;height:24px;background:var(--pad-base);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--cream-dim);font-size:12px;cursor:pointer;touch-action:manipulation;flex-shrink:0}
+.lib-close:active{background:var(--orange);color:#fff}
+
+.lib-reconnect{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;background:#2a1a10;border-bottom:1px solid var(--orange-dim);font-size:7px;letter-spacing:.12em;color:var(--orange);text-transform:uppercase;flex-shrink:0}
+
+.lib-breadcrumb{padding:7px 14px;font-size:7px;letter-spacing:.12em;color:var(--cream-dim);text-transform:uppercase;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;gap:0}
+.lib-bc-root{color:var(--cream-dim)}
+.lib-bc-root.lib-bc-link{color:var(--orange);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.lib-bc-sep{color:#484845}
+.lib-bc-pack{color:var(--cream)}
+
+.lib-list{flex:1;overflow-y:auto;padding:4px 0;min-height:0}
+.lib-pack-item,.lib-file-item{display:flex;align-items:center;padding:9px 14px;cursor:pointer;touch-action:manipulation;transition:background .05s;gap:8px}
+.lib-pack-item:active,.lib-file-item:active{background:rgba(244,97,26,.12)}
+.lib-pack-item{border-bottom:1px solid rgba(54,54,51,.5)}
+.lib-item-name{flex:1;font-size:8px;letter-spacing:.06em;color:var(--cream-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase}
+.lib-pack-item .lib-item-name{color:var(--cream)}
+.lib-file-arrow{font-size:10px;color:var(--border);flex-shrink:0}
+.lib-file-item:active .lib-file-arrow{color:var(--orange)}
+.lib-status{padding:16px 14px;font-size:7px;letter-spacing:.12em;color:#484845;text-transform:uppercase;text-align:center}
+
+.lib-pad-picker{flex-direction:column;gap:8px;padding:10px 14px 12px;border-top:1px solid var(--border);background:var(--panel);flex-shrink:0}
+.lib-picker-label{font-size:7px;letter-spacing:.12em;color:var(--orange);text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-picker-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.lib-pad-btn{background:var(--pad-base);border:1px solid var(--border);border-radius:3px;border-bottom:2px solid rgba(0,0,0,.4);text-align:center;font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--cream-dim);padding:6px 0;cursor:pointer;touch-action:manipulation;transition:all .06s}
+.lib-pad-btn:active,.lib-pad-btn.active{background:var(--orange);border-color:var(--orange-dim);color:#fff;border-bottom-width:1px;transform:translateY(1px)}
+.lib-picker-cancel{text-align:center;font-size:7px;letter-spacing:.15em;color:var(--cream-dim);text-transform:uppercase;padding:4px;cursor:pointer;touch-action:manipulation;opacity:.5}
+.lib-picker-cancel:active{opacity:1;color:var(--cream)}
+
+/* LIB button indicator */
+.btn.lib-trigger.has-lib{border-color:#3a6a4a;color:var(--green)}
+
 /* TOAST */
 .toast{position:fixed;bottom:calc(max(env(safe-area-inset-bottom),8px) + 16px);left:50%;transform:translateX(-50%) translateY(6px);background:rgba(22,22,20,.96);border:1px solid var(--orange-dim);color:var(--orange);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;padding:5px 14px;border-radius:2px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:100;text-transform:uppercase;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}

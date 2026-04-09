@@ -1,6 +1,7 @@
 'use strict';
 
 import { VERSION } from './state.js';
+import { initLibrary } from './library.js';
 import { buildVU, waveDraw } from './audio.js';
 import { buildPads } from './pads.js';
 import { buildSeq } from './sequencer.js';
@@ -13,7 +14,7 @@ import {
 } from './ui.js';
 import { showToast } from './toast.js';
 
-function init() {
+async function init() {
   document.getElementById('brandVersion').textContent = 'v' + VERSION;
   buildPads();
   setupKnobs();
@@ -23,6 +24,7 @@ function init() {
   initRename();
   initFileInput();
   initExport();
+  await initLibrary();
   initKeyboard();
 
   holdBtn('btnBpmDown', () => changeBpm(-1));
