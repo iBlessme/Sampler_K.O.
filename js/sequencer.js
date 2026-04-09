@@ -114,6 +114,21 @@ export function buildSeq() {
 
 export function tick() {
   state.seqStep = (state.seqStep + 1) % TOTAL;
+
+  // На границе бара — пропускаем пустые бары
+  if (state.seqStep % SPB === 0) {
+    let checked = 0;
+    while (checked < BARS) {
+      const off = state.seqStep;
+      const hasContent = Array.from({ length: N }).some((_, p) =>
+        seq[state.bank][p].slice(off, off + SPB).some(Boolean)
+      );
+      if (hasContent) break;
+      state.seqStep = (state.seqStep + SPB) % TOTAL;
+      checked++;
+    }
+  }
+
   const pb = Math.floor(state.seqStep / SPB);
   if (pb !== state.activeBar) state.activeBar = pb;
   for (let p = 0; p < N; p++) if (seq[state.bank][p][state.seqStep]) hitPad(p);

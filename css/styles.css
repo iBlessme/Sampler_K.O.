@@ -77,6 +77,7 @@ canvas#waveCanvas{width:100%;height:26px;display:block;position:relative;z-index
 .transport-btn:active{transform:translateY(1px);border-bottom-width:0}
 .transport-btn.play.playing{background:var(--orange);border-color:var(--orange-dim);color:#fff;box-shadow:0 0 12px rgba(244,97,26,.4)}
 .transport-btn.rec.recording{background:var(--red);border-color:#902020;color:#fff;box-shadow:0 0 12px rgba(224,53,53,.4)}
+.transport-btn.export.exporting{background:var(--green);border-color:#3a9050;color:#fff;box-shadow:0 0 12px rgba(78,203,113,.4);animation:blink 1s infinite}
 .divider-el{height:1px;background:linear-gradient(90deg,transparent,var(--border) 15%,var(--border) 85%,transparent)}
 
 /* PADS */

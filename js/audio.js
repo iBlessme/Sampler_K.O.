@@ -4,7 +4,10 @@ import { state, knob, samples, ps } from './state.js';
 
 const AC = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
+let masterGain = null;
 let reverbImpulse = null;
+let mediaRecorder = null;
+let recordedChunks = [];
 
 export function ensureCtx() {
   if (!audioCtx) audioCtx = new AC();
@@ -14,6 +17,46 @@ export function ensureCtx() {
 export function getAudioCtx() { return audioCtx; }
 
 export function resetReverb() { reverbImpulse = null; }
+
+function getMaster() {
+  if (!masterGain) {
+    masterGain = audioCtx.createGain();
+    masterGain.connect(audioCtx.destination);
+  }
+  return masterGain;
+}
+
+// ── EXPORT
+export function startExport() {
+  ensureCtx();
+  const dest = audioCtx.createMediaStreamDestination();
+  getMaster().connect(dest);
+  recordedChunks = [];
+  mediaRecorder = new MediaRecorder(dest.stream);
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+  mediaRecorder.onstop = () => {
+    getMaster().disconnect(dest);
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ko-session-${Date.now()}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  mediaRecorder.start();
+}
+
+export function stopExport() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+    mediaRecorder = null;
+  }
+}
+
+export function isExporting() {
+  return !!(mediaRecorder && mediaRecorder.state === 'recording');
+}
 
 function getRI() {
   if (reverbImpulse) return reverbImpulse;
@@ -33,7 +76,7 @@ function sendRev(node, amt) {
   g.gain.value = amt * 0.6;
   node.connect(cv);
   cv.connect(g);
-  g.connect(audioCtx.destination);
+  g.connect(getMaster());
 }
 
 export function playSample(i) {
@@ -65,7 +108,7 @@ export function playSample(i) {
 
   const pan = audioCtx.createStereoPanner();
   pan.pan.value = (p.pan - 50) / 50;
-  src.connect(g); g.connect(pan); pan.connect(audioCtx.destination);
+  src.connect(g); g.connect(pan); pan.connect(getMaster());
   if (knob.reverb > 5) sendRev(pan, knob.reverb / 100);
   src.start();
   if (src.loop) src.stop(audioCtx.currentTime + 2);
@@ -89,7 +132,7 @@ export function makeSynth(i) {
   pan.pan.value = (p.pan - 50) / 50;
   osc.type = ['sawtooth', 'square', 'triangle', 'sine'][Math.floor(i / 4) % 4];
   osc.frequency.value = [55, 110, 220, 880, 330, 660, 80, 440, 523, 659, 262, 392, 528, 200, 180, 100][i] * pp;
-  osc.connect(g); g.connect(pan); pan.connect(audioCtx.destination);
+  osc.connect(g); g.connect(pan); pan.connect(getMaster());
   if (knob.reverb > 5) sendRev(pan, knob.reverb / 100);
 
   g.gain.setValueAtTime(0, audioCtx.currentTime);

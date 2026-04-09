@@ -2,7 +2,7 @@
 
 import { state, knob, ps, padNames, samples, seq, defPS, midiName, N } from './state.js';
 import { showToast } from './toast.js';
-import { ensureCtx, getAudioCtx, resetReverb, waveDrawBuf, waveDraw } from './audio.js';
+import { ensureCtx, getAudioCtx, resetReverb, waveDrawBuf, waveDraw, startExport, stopExport, isExporting } from './audio.js';
 import { buildSeq, tick } from './sequencer.js';
 import { hitPad, refreshPads, buildPads, setOpenCtx } from './pads.js';
 
@@ -263,6 +263,9 @@ export function initFileInput() {
     try {
       const buf = await audioCtx.decodeAudioData(await file.arrayBuffer());
       samples[state.bank][target] = buf;
+      // авто-переименование из имени файла
+      const autoName = file.name.replace(/\.[^.]+$/, '').toUpperCase().slice(0, 8);
+      if (autoName) padNames[target] = autoName;
       waveDrawBuf(buf, 'waveCanvas');
       if (state.psPad === target) waveDrawBuf(buf, 'psWaveCanvas');
       refreshPads();
@@ -370,4 +373,24 @@ export function initKeyboard() {
     if (e.key === '[') { state.activeBar = Math.max(0, state.activeBar - 1); buildSeq(); }
     if (e.key === ']') { state.activeBar = Math.min(3, state.activeBar + 1); buildSeq(); }
   });
+}
+
+// ── EXPORT
+export function initExport() {
+  const btn = document.getElementById('btnExport');
+
+  function toggle() {
+    if (isExporting()) {
+      stopExport();
+      btn.classList.remove('exporting');
+      showToast('export saved');
+    } else {
+      startExport();
+      btn.classList.add('exporting');
+      showToast('recording audio...');
+    }
+  }
+
+  btn.addEventListener('click', toggle);
+  btn.addEventListener('touchstart', e => { e.preventDefault(); toggle(); }, { passive: false });
 }

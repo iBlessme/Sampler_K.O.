@@ -6,7 +6,7 @@ import { buildPads } from './pads.js';
 import { buildSeq } from './sequencer.js';
 import {
   setupKnobs, setupPsKnobs,
-  initContextMenu, initPadSettings, initRename, initFileInput,
+  initContextMenu, initPadSettings, initRename, initFileInput, initExport,
   togglePlay, toggleRecord, changeBpm,
   holdBtn, setBank, toggleMode, nudgePitch,
   initKeyboard,
@@ -22,6 +22,7 @@ function init() {
   initPadSettings();
   initRename();
   initFileInput();
+  initExport();
   initKeyboard();
 
   holdBtn('btnBpmDown', () => changeBpm(-1));
