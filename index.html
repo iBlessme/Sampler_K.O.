@@ -1,322 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>K.O. SAMPLER</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>K.O. SAMPLER</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap');
+    :root{--panel:#1e1e1c;--panel2:#252523;--border:#363633;--orange:#f4611a;--orange-dim:#a03d0e;--cream:#e8e0d0;--cream-dim:#8a8070;--green:#4ecb71;--red:#e03535;--pad-base:#2a2a27;--pad-lit:#363630}
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+    body{background:#0e0e0d;display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;user-select:none;-webkit-user-select:none;touch-action:none}
+    .device{background:var(--panel);position:relative;overflow:hidden;display:grid}
+    .screw{position:absolute;width:9px;height:9px;background:radial-gradient(circle at 40% 35%,#555 0%,#252523 60%,#111 100%);border-radius:50%;border:1px solid #444;z-index:20}
+    .screw::after{content:'';position:absolute;top:50%;left:20%;width:60%;height:1px;background:rgba(0,0,0,.7);transform:translateY(-50%) rotate(45deg)}
+    .screw.tl{top:8px;left:8px}.screw.tr{top:8px;right:8px}.screw.bl{bottom:8px;left:8px}.screw.br{bottom:8px;right:8px}
 
-:root {
-  --panel:       #1e1e1c;
-  --panel2:      #252523;
-  --border:      #363633;
-  --orange:      #f4611a;
-  --orange-dim:  #a03d0e;
-  --cream:       #e8e0d0;
-  --cream-dim:   #8a8070;
-  --green:       #4ecb71;
-  --red:         #e03535;
-  --pad-base:    #2a2a27;
-  --pad-lit:     #363630;
-  --pad-rec:     #3a1a1a;
-}
+    /* MOBILE PORTRAIT */
+    .device{width:100vw;height:100dvh;border-radius:0;grid-template-columns:1fr;grid-template-rows:auto auto auto auto 1fr auto;grid-template-areas:"header" "displays" "controls" "divider" "pads-side" "bottom";padding:max(env(safe-area-inset-top),6px) 11px max(env(safe-area-inset-bottom),6px) 11px;gap:4px}
+    .header{grid-area:header}.display-row{grid-area:displays}.controls-row{grid-area:controls}.divider-el{grid-area:divider}.bottom-strip{grid-area:bottom}
+    .pad-section{grid-area:pads-side}
 
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none}
-body{background:#111110;display:flex;align-items:center;justify-content:center;
-     font-family:'Share Tech Mono',monospace;user-select:none;-webkit-user-select:none}
+    /* MOBILE LANDSCAPE */
+    @media (max-height:520px) and (orientation:landscape){
+      .device{grid-template-columns:1fr 1fr;grid-template-rows:auto auto 1fr auto;grid-template-areas:"header header" "controls displays" "pads-side pads-side" "bottom bottom";padding:max(env(safe-area-inset-top),4px) max(env(safe-area-inset-right),10px) max(env(safe-area-inset-bottom),4px) max(env(safe-area-inset-left),10px)}
+      .divider-el{display:none}.display-row{flex-direction:column;gap:4px}.waveform-display{width:100%}
+    }
 
-/* ── DEVICE ── */
-.device{background:var(--panel);width:100%;max-width:520px;height:100dvh;
-  display:flex;flex-direction:column;
-  padding:max(env(safe-area-inset-top),8px) 13px max(env(safe-area-inset-bottom),8px) 13px;
-  position:relative;overflow:hidden}
+    /* TABLET LANDSCAPE + DESKTOP */
+    @media (min-width:720px) and (orientation:landscape),(min-width:900px){
+      body{background:#0a0a09}
+      .device{width:auto;height:auto;min-width:700px;max-width:980px;max-height:calc(100vh - 40px);border-radius:14px;border:1.5px solid var(--border);box-shadow:0 40px 100px rgba(0,0,0,.8),0 2px 0 rgba(255,255,255,.04) inset;grid-template-columns:1fr 310px;grid-template-rows:auto auto auto 1fr auto;grid-template-areas:"header header" "controls displays" "divider divider" "pads seq-panel" "bottom bottom";padding:16px 18px 14px 18px;gap:8px}
+      .divider-el{grid-area:divider}
+      .pad-section{grid-area:pads;flex:1}
+      .seq-desktop-panel{grid-area:seq-panel;display:flex!important}
+      .seq-mobile-wrap{display:none!important}
+      .display-row{grid-area:displays;flex-direction:column;gap:6px}
+      .waveform-display{width:100%}
+      .controls-row{grid-area:controls}
+      .side-panel{display:none}
+      .vu-desktop-row{display:flex!important}
+    }
+    @media (min-width:1100px){.device{min-width:860px;max-width:1100px;padding:20px 24px 16px 24px}}
 
-.screw{position:absolute;width:9px;height:9px;
-  background:radial-gradient(circle at 40% 35%,#555 0%,#252523 60%,#111 100%);
-  border-radius:50%;border:1px solid #444;z-index:10}
-.screw::after{content:'';position:absolute;top:50%;left:20%;width:60%;height:1px;
-  background:rgba(0,0,0,.7);transform:translateY(-50%) rotate(45deg)}
-.screw.tl{top:8px;left:8px}.screw.tr{top:8px;right:8px}
-.screw.bl{bottom:8px;left:8px}.screw.br{bottom:8px;right:8px}
+    /* HEADER */
+    .header{display:flex;align-items:center;justify-content:space-between;padding:2px 18px}
+    .brand{display:flex;align-items:baseline;gap:7px}
+    .brand-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(17px,4vw,24px);letter-spacing:.08em;color:var(--cream);text-transform:uppercase}
+    .brand-sub{font-family:'Barlow Condensed',sans-serif;font-size:clamp(9px,2vw,12px);font-weight:400;letter-spacing:.2em;color:var(--cream-dim);text-transform:uppercase}
+    .brand-model{font-size:9px;color:var(--orange);letter-spacing:.15em}
+    .status-leds{display:flex;gap:5px;align-items:center}
+    .led{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .1s}
+    .led.green{background:var(--green);box-shadow:0 0 6px var(--green)}.led.orange{background:var(--orange);box-shadow:0 0 6px var(--orange)}.led.red{background:var(--red);box-shadow:0 0 6px var(--red)}
 
-/* ── HEADER ── */
-.header{display:flex;align-items:center;justify-content:space-between;
-  padding:4px 20px;flex-shrink:0}
-.brand{display:flex;align-items:baseline;gap:7px}
-.brand-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;
-  font-size:clamp(17px,4.5vw,22px);letter-spacing:.08em;color:var(--cream);text-transform:uppercase}
-.brand-sub{font-family:'Barlow Condensed',sans-serif;font-size:clamp(9px,2.2vw,11px);
-  font-weight:400;letter-spacing:.2em;color:var(--cream-dim);text-transform:uppercase}
-.brand-model{font-size:9px;color:var(--orange);letter-spacing:.15em}
-.status-leds{display:flex;gap:5px;align-items:center}
-.led{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .1s}
-.led.green{background:var(--green);box-shadow:0 0 6px var(--green)}
-.led.orange{background:var(--orange);box-shadow:0 0 6px var(--orange)}
-.led.red{background:var(--red);box-shadow:0 0 6px var(--red)}
+    /* DISPLAYS */
+    .display-row{display:flex;gap:7px;flex-shrink:0}
+    .display{flex:1;background:#090d07;border:1px solid #1e3018;border-radius:4px;padding:5px 10px;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.5) inset;min-height:48px}
+    .display::before,.waveform-display::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.1) 0px,rgba(0,0,0,.1) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:1}
+    .display-label{font-size:7px;letter-spacing:.2em;color:#264520;text-transform:uppercase;margin-bottom:2px;position:relative;z-index:2}
+    .display-main{font-size:clamp(18px,4.5vw,24px);color:var(--green);letter-spacing:.05em;text-shadow:0 0 8px rgba(78,203,113,.5);line-height:1;position:relative;z-index:2}
+    .display-sub{font-size:8px;color:#3a7a40;margin-top:1px;letter-spacing:.1em;position:relative;z-index:2}
+    .waveform-display{width:clamp(88px,22vw,120px);background:#090d07;border:1px solid #1e3018;border-radius:4px;padding:5px 7px;box-shadow:0 2px 10px rgba(0,0,0,.5) inset;overflow:hidden;position:relative;flex-shrink:0}
+    .waveform-display .display-label{position:relative;z-index:2;margin-bottom:4px}
+    canvas#waveCanvas{width:100%;height:26px;display:block;position:relative;z-index:2}
 
-/* ── DISPLAY ── */
-.display-row{display:flex;gap:7px;flex-shrink:0;margin-bottom:5px}
-.display{flex:1;background:#090d07;border:1px solid #1e3018;border-radius:4px;
-  padding:5px 10px;position:relative;overflow:hidden;
-  box-shadow:0 2px 10px rgba(0,0,0,.5) inset;min-height:50px}
-.display::before,.waveform-display::before{content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.1) 0px,rgba(0,0,0,.1) 1px,transparent 1px,transparent 3px);
-  pointer-events:none;z-index:1}
-.display-label{font-size:7px;letter-spacing:.2em;color:#264520;text-transform:uppercase;
-  margin-bottom:2px;position:relative;z-index:2}
-.display-main{font-size:clamp(19px,5vw,25px);color:var(--green);letter-spacing:.05em;
-  text-shadow:0 0 8px rgba(78,203,113,.5);line-height:1;position:relative;z-index:2}
-.display-sub{font-size:8px;color:#3a7a40;margin-top:1px;letter-spacing:.1em;position:relative;z-index:2}
+    /* CONTROLS */
+    .controls-row{display:flex;gap:7px;align-items:center;flex-shrink:0}
+    .knob-group{display:flex;gap:clamp(5px,1.8vw,11px);align-items:flex-start}
+    .knob-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
+    .knob{width:clamp(28px,7.5vw,40px);height:clamp(28px,7.5vw,40px);background:radial-gradient(circle at 35% 30%,#484843,#1c1c1a 70%);border-radius:50%;border:1.5px solid #444;position:relative;cursor:pointer;touch-action:none;box-shadow:0 3px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.04) inset}
+    .knob::after{content:'';position:absolute;top:3px;left:50%;width:2px;height:7px;background:var(--orange);border-radius:1px;transform-origin:bottom center;transform:translateX(-50%) rotate(0deg);box-shadow:0 0 4px var(--orange)}
+    .knob-label{font-size:7px;letter-spacing:.1em;color:var(--cream-dim);text-transform:uppercase}
+    .knob-value{font-size:8px;color:var(--orange)}
+    .btn-group{display:flex;flex-direction:column;gap:4px;margin-left:auto}
+    .btn-row{display:flex;gap:4px}
+    .btn{background:var(--pad-base);border:1px solid var(--border);border-radius:3px;border-bottom:2px solid rgba(0,0,0,.5);color:var(--cream-dim);font-family:'Share Tech Mono',monospace;font-size:clamp(7px,1.8vw,8px);letter-spacing:.08em;text-transform:uppercase;padding:clamp(5px,1.3vw,7px) clamp(6px,1.6vw,9px);cursor:pointer;touch-action:manipulation;transition:background .06s,color .06s;-webkit-appearance:none}
+    .btn.active,.btn:active{background:var(--orange);color:#fff;border-color:var(--orange-dim);border-bottom-width:1px;transform:translateY(1px)}
+    .transport-row{display:flex;align-items:center;gap:5px}
+    .bpm-display{background:#090d07;border:1px solid #1e3018;border-radius:3px;padding:3px 6px;text-align:center;min-width:40px}
+    .bpm-num{font-size:clamp(13px,3.5vw,17px);color:var(--green);text-shadow:0 0 6px rgba(78,203,113,.5);line-height:1}
+    .bpm-label{font-size:6px;color:#264520;letter-spacing:.2em;text-transform:uppercase}
+    .transport-btn{width:clamp(26px,6.5vw,32px);height:clamp(26px,6.5vw,32px);background:var(--pad-base);border:1px solid var(--border);border-radius:50%;border-bottom:2px solid rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;color:var(--cream-dim);font-size:clamp(8px,2vw,10px);transition:all .06s}
+    .transport-btn:active{transform:translateY(1px);border-bottom-width:0}
+    .transport-btn.play.playing{background:var(--orange);border-color:var(--orange-dim);color:#fff;box-shadow:0 0 12px rgba(244,97,26,.4)}
+    .transport-btn.rec.recording{background:var(--red);border-color:#902020;color:#fff;box-shadow:0 0 12px rgba(224,53,53,.4)}
+    .divider-el{height:1px;background:linear-gradient(90deg,transparent,var(--border) 15%,var(--border) 85%,transparent)}
 
-.waveform-display{width:clamp(90px,24vw,115px);background:#090d07;border:1px solid #1e3018;
-  border-radius:4px;padding:5px 7px;box-shadow:0 2px 10px rgba(0,0,0,.5) inset;
-  overflow:hidden;position:relative;flex-shrink:0}
-.waveform-display .display-label{position:relative;z-index:2;margin-bottom:4px}
-canvas#waveCanvas{width:100%;height:26px;display:block;position:relative;z-index:2}
+    /* PADS */
+    .pad-section{display:flex;gap:7px;min-height:0}
+    .pad-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(4px,1.1vw,7px);flex:1;touch-action:none}
+    .pad{background:var(--pad-base);border-radius:6px;border:1px solid #383835;border-bottom:3px solid #141412;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:3px 4px 4px;overflow:hidden;touch-action:none;transition:background .05s,transform .05s,border-bottom-width .05s,box-shadow .05s}
+    .pad::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.05) 0%,transparent 55%);border-radius:inherit;pointer-events:none}
+    .pad-name{font-size:clamp(6px,1.5vw,8px);letter-spacing:.08em;color:var(--cream-dim);text-transform:uppercase;text-align:center;line-height:1.2;position:relative;z-index:1}
+    .pad-num{position:absolute;top:3px;left:4px;font-size:6px;color:#484845;z-index:1}
+    .pad-indicator{position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;opacity:.35}
+    .pad-ring{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;opacity:0}
+    .pad-ring svg{width:100%;height:100%}
+    .pad-ring circle{fill:none;stroke:var(--orange);stroke-width:3;stroke-dasharray:200;stroke-dashoffset:200;stroke-linecap:round;transform-origin:50% 50%;transform:rotate(-90deg)}
+    .pad-glow{position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 50% 40%,rgba(244,97,26,.65),transparent 65%);opacity:0;pointer-events:none;transition:opacity .05s}
+    .pad.has-sample{background:var(--pad-lit)}.pad.has-sample .pad-name{color:var(--cream)}.pad.has-sample .pad-num{color:#666}.pad.has-sample .pad-indicator{opacity:.7}
+    .pad.has-steps .pad-num::after{content:'●';font-size:4px;color:var(--green);margin-left:1px;vertical-align:top}
+    .pad.hitting{background:var(--orange)!important;border-color:var(--orange-dim);border-bottom-width:1px;transform:translateY(2px);box-shadow:0 0 18px rgba(244,97,26,.4)}
+    .pad.hitting .pad-name{color:#fff}.pad.hitting .pad-glow{opacity:1}.pad.hitting .pad-indicator{opacity:1;box-shadow:0 0 6px currentColor}
+    .pad.long-pressing .pad-ring{opacity:1}.pad.long-pressing{border-color:#f4611a88}
+    .pad.muted{opacity:.4}
 
-/* ── CONTROLS ── */
-.controls-row{display:flex;gap:7px;align-items:center;flex-shrink:0;margin-bottom:5px}
-.knob-group{display:flex;gap:clamp(6px,2vw,10px);align-items:flex-start}
-.knob-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
-.knob{width:clamp(30px,8vw,38px);height:clamp(30px,8vw,38px);
-  background:radial-gradient(circle at 35% 30%,#484843,#1c1c1a 70%);
-  border-radius:50%;border:1.5px solid #444;position:relative;cursor:pointer;
-  touch-action:none;box-shadow:0 3px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.04) inset}
-.knob::after{content:'';position:absolute;top:3px;left:50%;width:2px;height:7px;
-  background:var(--orange);border-radius:1px;transform-origin:bottom center;
-  transform:translateX(-50%) rotate(0deg);box-shadow:0 0 4px var(--orange)}
-.knob-label{font-size:7px;letter-spacing:.1em;color:var(--cream-dim);text-transform:uppercase}
-.knob-value{font-size:8px;color:var(--orange)}
+    /* SIDE PANEL */
+    .side-panel{display:flex;flex-direction:column;gap:6px;width:clamp(66px,18vw,86px);flex-shrink:0}
+    .side-section{background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:6px}
+    .side-label{font-size:7px;letter-spacing:.16em;color:var(--cream-dim);text-transform:uppercase;margin-bottom:5px;display:block}
+    .vol-bars{display:flex;gap:2px;align-items:flex-end;height:20px}
+    .vol-bar{flex:1;border-radius:1px;background:#252523;transition:height .04s,background .04s;min-height:2px}
+    .vol-bar.active{background:var(--green)}.vol-bar.peak{background:var(--orange)}.vol-bar.clip{background:var(--red)}
 
-.btn-group{display:flex;flex-direction:column;gap:4px;margin-left:auto}
-.btn-row{display:flex;gap:4px}
-.btn{background:var(--pad-base);border:1px solid var(--border);border-radius:3px;
-  border-bottom:2px solid rgba(0,0,0,.5);color:var(--cream-dim);
-  font-family:'Share Tech Mono',monospace;font-size:clamp(7px,1.8vw,8px);
-  letter-spacing:.08em;text-transform:uppercase;
-  padding:clamp(5px,1.4vw,7px) clamp(6px,1.8vw,9px);
-  cursor:pointer;touch-action:manipulation;transition:background .06s,color .06s;-webkit-appearance:none}
-.btn.active,.btn:active{background:var(--orange);color:#fff;
-  border-color:var(--orange-dim);border-bottom-width:1px;transform:translateY(1px)}
+    /* SEQUENCER */
+    .seq-wrap{display:flex;flex-direction:column;gap:5px}
+    .seq-top-row{display:flex;align-items:center;justify-content:space-between;gap:5px}
+    .seq-label-text{font-size:7px;letter-spacing:.14em;color:var(--cream-dim);text-transform:uppercase;white-space:nowrap}
+    .seq-track-name{color:var(--orange)}
+    .seq-mode-dot{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0;transition:all .15s}
+    .seq-mode-dot.rec{background:var(--red);box-shadow:0 0 5px var(--red);animation:blink 1s infinite}
+    .seq-mode-dot.play{background:var(--green);box-shadow:0 0 5px var(--green)}
+    .bar-tabs{display:flex;gap:3px}
+    .bar-tab{padding:3px 6px;background:var(--pad-base);border:1px solid var(--border);border-radius:2px;font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:.08em;color:var(--cream-dim);cursor:pointer;touch-action:manipulation;transition:all .06s;text-transform:uppercase}
+    .bar-tab.active{background:var(--orange);color:#fff;border-color:var(--orange-dim)}
+    .bar-tab.has-data{border-color:#4a6a7a}
+    .bar-tab.current-bar{box-shadow:0 0 0 1px var(--green)}
+    .seq-steps-area{display:flex;flex-direction:column;gap:2px}
+    .seq-row{display:flex;gap:2px}
+    .seq-step{flex:1;height:clamp(8px,2.2vw,11px);background:var(--pad-base);border-radius:1px;border:1px solid #2a2a27;cursor:pointer;touch-action:manipulation;transition:all .04s;min-width:0}
+    .seq-step.on{background:var(--orange);border-color:var(--orange-dim)}
+    .seq-step.current{outline:1px solid var(--green)}
+    .seq-step.on.current{background:var(--green);border-color:#3a9050}
+    .seq-step:nth-child(4n+1){margin-left:3px}.seq-step:first-child{margin-left:0}
+    .bar-overview{display:flex;gap:3px;margin-top:1px}
+    .bar-mini{flex:1;display:flex;gap:1px}
+    .bar-mini-step{flex:1;height:4px;background:var(--pad-base);border-radius:1px;transition:background .04s}
+    .bar-mini-step.on{background:var(--orange)}.bar-mini-step.cur{background:var(--green)}
+    .seq-actions{display:flex;gap:4px;margin-top:2px}
+    .seq-desktop-panel{display:none;flex-direction:column;gap:8px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:10px;min-height:0;overflow:hidden}
+    .vu-desktop-row{display:none;gap:2px;align-items:flex-end;height:22px;margin-bottom:2px}
 
-.transport-row{display:flex;align-items:center;gap:5px}
-.bpm-display{background:#090d07;border:1px solid #1e3018;border-radius:3px;
-  padding:3px 6px;text-align:center;min-width:40px}
-.bpm-num{font-size:clamp(14px,3.8vw,17px);color:var(--green);
-  text-shadow:0 0 6px rgba(78,203,113,.5);line-height:1}
-.bpm-label{font-size:6px;color:#264520;letter-spacing:.2em;text-transform:uppercase}
+    /* BOTTOM */
+    .bottom-strip{display:flex;align-items:center;justify-content:space-between;padding:3px 18px 0 18px;flex-shrink:0}
+    .input-jack{display:flex;align-items:center;gap:4px;font-size:7px;color:var(--cream-dim);letter-spacing:.1em;text-transform:uppercase}
+    .jack{width:11px;height:11px;border-radius:50%;background:#0d0d0c;border:2px solid #404040;box-shadow:inset 0 1px 2px rgba(0,0,0,.9)}
+    .bottom-controls{display:flex;flex-direction:column;align-items:center;gap:3px}
+    .pitch-row{display:flex;gap:5px;align-items:center}
+    .pitch-btn{width:clamp(26px,7vw,32px);height:clamp(26px,7vw,32px);background:var(--pad-base);border:1px solid var(--border);border-radius:3px;border-bottom:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:var(--cream-dim);font-size:14px;cursor:pointer;touch-action:manipulation;transition:all .06s}
+    .pitch-btn:active{transform:translateY(1px);background:var(--orange);color:#fff;border-bottom-width:0}
+    .tune-label{font-size:7px;color:var(--cream-dim);letter-spacing:.1em;text-transform:uppercase}
+    .load-hint-text{font-size:7px;color:var(--cream-dim);letter-spacing:.1em;opacity:.5;text-transform:uppercase;cursor:pointer;touch-action:manipulation;text-decoration:underline;text-underline-offset:2px}
+    .load-hint-text:active{opacity:1;color:var(--orange)}
+    input[type=file]{display:none}
 
-.transport-btn{width:clamp(26px,7vw,32px);height:clamp(26px,7vw,32px);
-  background:var(--pad-base);border:1px solid var(--border);border-radius:50%;
-  border-bottom:2px solid rgba(0,0,0,.5);display:flex;align-items:center;
-  justify-content:center;cursor:pointer;touch-action:manipulation;
-  color:var(--cream-dim);font-size:clamp(8px,2.2vw,10px);transition:all .06s}
-.transport-btn:active{transform:translateY(1px);border-bottom-width:0}
-.transport-btn.play.playing{background:var(--orange);border-color:var(--orange-dim);
-  color:#fff;box-shadow:0 0 12px rgba(244,97,26,.4)}
-.transport-btn.rec.recording{background:var(--red);border-color:#902020;
-  color:#fff;box-shadow:0 0 12px rgba(224,53,53,.4)}
+    /* CONTEXT MENU */
+    .ctx-overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);display:flex;align-items:center;justify-content:center;z-index:60;opacity:0;pointer-events:none;transition:opacity .18s;touch-action:none}
+    .ctx-overlay.show{opacity:1;pointer-events:all}
+    .ctx-box{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;min-width:240px;max-width:92vw;display:flex;flex-direction:column;gap:9px}
+    .ctx-title{display:flex;align-items:center;justify-content:space-between}
+    .ctx-pad-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--cream);letter-spacing:.05em}
+    .ctx-pad-meta{font-size:8px;color:var(--cream-dim);letter-spacing:.12em;text-transform:uppercase}
+    .ctx-divider{height:1px;background:var(--border)}
+    .ctx-actions{display:flex;flex-direction:column;gap:5px}
+    .ctx-btn{display:flex;align-items:center;gap:10px;padding:8px 11px;background:var(--pad-base);border:1px solid var(--border);border-radius:5px;border-bottom:2px solid rgba(0,0,0,.5);cursor:pointer;touch-action:manipulation;transition:all .06s}
+    .ctx-btn:active{transform:translateY(1px);border-bottom-width:0;background:#3a3a37;border-color:#555}
+    .ctx-btn.danger:active{background:#3a1010;border-color:var(--red)}
+    .ctx-btn.primary:active{background:var(--orange-dim)}
+    .ctx-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+    .ctx-text{display:flex;flex-direction:column}
+    .ctx-text-main{font-size:9px;color:var(--cream);letter-spacing:.1em;text-transform:uppercase}
+    .ctx-text-sub{font-size:7px;color:var(--cream-dim);letter-spacing:.08em;margin-top:1px}
+    .ctx-cancel{text-align:center;font-size:8px;color:var(--cream-dim);letter-spacing:.15em;text-transform:uppercase;padding:5px;cursor:pointer;touch-action:manipulation;opacity:.6}
+    .ctx-cancel:active{opacity:1;color:var(--cream)}
 
-/* ── RECORD STATE indicator on seq label ── */
-.rec-active-label{color:var(--red) !important;animation:blink 1s infinite}
+    /* PAD SETTINGS */
+    .pad-settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:65;opacity:0;pointer-events:none;transition:opacity .18s;touch-action:none}
+    .pad-settings-overlay.show{opacity:1;pointer-events:all}
+    .pad-settings-box{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;width:min(340px,95vw);display:flex;flex-direction:column;gap:11px;max-height:90vh;overflow-y:auto}
+    .ps-header{display:flex;align-items:center;justify-content:space-between}
+    .ps-title{display:flex;flex-direction:column;gap:2px}
+    .ps-pad-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:var(--cream)}
+    .ps-subtitle{font-size:7px;color:var(--cream-dim);letter-spacing:.15em;text-transform:uppercase}
+    .ps-close-btn{width:26px;height:26px;background:var(--pad-base);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--cream-dim);font-size:14px;cursor:pointer;touch-action:manipulation}
+    .ps-close-btn:active{background:var(--orange);color:#fff}
+    .ps-divider{height:1px;background:var(--border)}
+    .ps-knobs{display:flex;gap:8px;justify-content:space-between}
+    .ps-knob-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1}
+    .ps-knob{width:44px;height:44px;background:radial-gradient(circle at 35% 30%,#545450,#1c1c1a 70%);border-radius:50%;border:1.5px solid #555;position:relative;cursor:pointer;touch-action:none;box-shadow:0 4px 10px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.06) inset}
+    .ps-knob::after{content:'';position:absolute;top:4px;left:50%;width:2.5px;height:9px;background:var(--orange);border-radius:2px;transform-origin:bottom center;transform:translateX(-50%) rotate(0deg);box-shadow:0 0 5px var(--orange)}
+    .ps-knob-label{font-size:7px;letter-spacing:.12em;color:var(--cream-dim);text-transform:uppercase;text-align:center}
+    .ps-knob-value{font-size:9px;color:var(--orange);text-align:center;min-width:28px}
+    .ps-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .ps-row-label{font-size:7px;letter-spacing:.15em;color:var(--cream-dim);text-transform:uppercase;flex-shrink:0}
+    .ps-note-display{flex:1;background:#090d07;border:1px solid #1e3018;border-radius:3px;padding:4px 8px;text-align:center;font-size:13px;color:var(--green);text-shadow:0 0 6px rgba(78,203,113,.4);letter-spacing:.05em}
+    .ps-mini-btns{display:flex;gap:4px}
+    .ps-mini-btn{width:26px;height:26px;background:var(--pad-base);border:1px solid var(--border);border-radius:3px;border-bottom:2px solid rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:var(--cream-dim);font-size:11px;cursor:pointer;touch-action:manipulation;transition:all .06s}
+    .ps-mini-btn:active{transform:translateY(1px);background:var(--orange);color:#fff;border-bottom-width:0}
+    .ps-wave-label{font-size:7px;letter-spacing:.15em;color:var(--cream-dim);text-transform:uppercase;margin-bottom:3px}
+    .ps-wave-wrap{background:#090d07;border:1px solid #1e3018;border-radius:3px;padding:4px;position:relative;overflow:hidden}
+    .ps-wave-wrap::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0px,rgba(0,0,0,.12) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:1}
+    canvas#psWaveCanvas{width:100%;height:38px;display:block;position:relative;z-index:2}
+    .ps-toggles{display:flex;gap:5px}
+    .ps-toggle{flex:1;padding:7px 0;background:var(--pad-base);border:1px solid var(--border);border-radius:3px;border-bottom:2px solid rgba(0,0,0,.4);text-align:center;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:.1em;color:var(--cream-dim);text-transform:uppercase;cursor:pointer;touch-action:manipulation;transition:all .06s}
+    .ps-toggle.active{background:var(--orange);color:#fff;border-color:var(--orange-dim);border-bottom-width:1px}
+    .ps-toggle:active{transform:translateY(1px);border-bottom-width:0}
+    .ps-footer{display:flex;gap:6px}
+    .ps-btn{flex:1;padding:9px;background:var(--pad-base);border:1px solid var(--border);border-radius:4px;border-bottom:2px solid rgba(0,0,0,.5);color:var(--cream);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;touch-action:manipulation;text-align:center;transition:all .06s}
+    .ps-btn.primary{background:var(--orange);border-color:var(--orange-dim)}
+    .ps-btn:active{transform:translateY(1px);border-bottom-width:0}
 
-/* ── DIVIDER ── */
-.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border) 15%,var(--border) 85%,transparent);
-  margin:4px 0;flex-shrink:0}
+    /* RENAME */
+    .rename-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:70;opacity:0;pointer-events:none;transition:opacity .15s;touch-action:none}
+    .rename-overlay.show{opacity:1;pointer-events:all}
+    .rename-box{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:20px;width:min(260px,92vw);display:flex;flex-direction:column;gap:12px}
+    .rename-title{font-size:9px;letter-spacing:.2em;color:var(--orange);text-transform:uppercase}
+    .rename-input{background:#090d07;border:1px solid #1e3018;border-radius:4px;padding:8px 12px;color:var(--green);font-family:'Share Tech Mono',monospace;font-size:16px;letter-spacing:.05em;width:100%;text-shadow:0 0 8px rgba(78,203,113,.4);caret-color:var(--green)}
+    .rename-input:focus{outline:none;border-color:#3a6030}
+    .rename-btn-row{display:flex;gap:8px}
+    .rename-btn{flex:1;padding:9px;background:var(--pad-base);border:1px solid var(--border);border-radius:4px;border-bottom:2px solid rgba(0,0,0,.5);color:var(--cream);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;touch-action:manipulation;text-align:center}
+    .rename-btn.primary{background:var(--orange);border-color:var(--orange-dim)}
+    .rename-btn:active{transform:translateY(1px);border-bottom-width:0}
 
-/* ── PADS ── */
-.pad-section{display:flex;gap:7px;flex:1;min-height:0}
-.pad-grid{display:grid;grid-template-columns:repeat(4,1fr);
-  gap:clamp(4px,1.2vw,7px);flex:1;touch-action:none}
-
-.pad{background:var(--pad-base);border-radius:6px;border:1px solid #383835;
-  border-bottom:3px solid #141412;cursor:pointer;position:relative;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  padding:3px 4px 4px;overflow:hidden;touch-action:none;
-  transition:background .05s,transform .05s,border-bottom-width .05s,box-shadow .05s}
-.pad::before{content:'';position:absolute;inset:0;
-  background:linear-gradient(145deg,rgba(255,255,255,.05) 0%,transparent 55%);
-  border-radius:inherit;pointer-events:none}
-
-.pad-name{font-size:clamp(6px,1.6vw,8px);letter-spacing:.08em;color:var(--cream-dim);
-  text-transform:uppercase;text-align:center;line-height:1.2;position:relative;z-index:1}
-.pad-num{position:absolute;top:3px;left:4px;font-size:6px;color:#484845;z-index:1}
-.pad-indicator{position:absolute;top:3px;right:4px;width:5px;height:5px;
-  border-radius:50%;opacity:.35}
-
-/* Long-press progress ring */
-.pad-ring{position:absolute;top:0;left:0;width:100%;height:100%;
-  pointer-events:none;z-index:2;opacity:0}
-.pad-ring svg{width:100%;height:100%}
-.pad-ring circle{fill:none;stroke:var(--orange);stroke-width:3;
-  stroke-dasharray:200;stroke-dashoffset:200;
-  stroke-linecap:round;transform-origin:50% 50%;transform:rotate(-90deg);
-  transition:stroke-dashoffset .05s linear}
-
-.pad-glow{position:absolute;inset:0;border-radius:inherit;
-  background:radial-gradient(circle at 50% 40%,rgba(244,97,26,.65),transparent 65%);
-  opacity:0;pointer-events:none;transition:opacity .05s}
-
-/* Pad states */
-.pad.has-sample{background:var(--pad-lit)}
-.pad.has-sample .pad-name{color:var(--cream)}
-.pad.has-sample .pad-num{color:#666}
-.pad.has-sample .pad-indicator{opacity:.7}
-
-/* Pad has recorded steps */
-.pad.has-steps .pad-num{color:var(--green)}
-
-.pad.hitting{background:var(--orange) !important;border-color:var(--orange-dim);
-  border-bottom-width:1px;transform:translateY(2px);box-shadow:0 0 18px rgba(244,97,26,.4)}
-.pad.hitting .pad-name{color:#fff}
-.pad.hitting .pad-glow{opacity:1}
-.pad.hitting .pad-indicator{opacity:1;box-shadow:0 0 6px currentColor}
-
-/* Pad is being long-pressed */
-.pad.long-pressing .pad-ring{opacity:1}
-.pad.long-pressing{border-color:#f4611a88}
-
-/* ── SIDE PANEL ── */
-.side-panel{display:flex;flex-direction:column;gap:6px;
-  width:clamp(68px,19vw,88px);flex-shrink:0}
-.side-section{background:var(--panel2);border:1px solid var(--border);
-  border-radius:4px;padding:6px}
-.side-label{font-size:7px;letter-spacing:.16em;color:var(--cream-dim);
-  text-transform:uppercase;margin-bottom:5px;display:block}
-
-.vol-bars{display:flex;gap:2px;align-items:flex-end;height:20px}
-.vol-bar{flex:1;border-radius:1px;background:#252523;transition:height .04s,background .04s;min-height:2px}
-.vol-bar.active{background:var(--green)}
-.vol-bar.peak{background:var(--orange)}
-.vol-bar.clip{background:var(--red)}
-
-/* ── SEQUENCER ── */
-.seq-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-.seq-label{font-size:7px;letter-spacing:.16em;color:var(--cream-dim);text-transform:uppercase}
-.seq-mode-dot{width:5px;height:5px;border-radius:50%;background:var(--border);transition:all .15s}
-.seq-mode-dot.rec{background:var(--red);box-shadow:0 0 5px var(--red);animation:blink 1s infinite}
-.seq-mode-dot.play{background:var(--green);box-shadow:0 0 5px var(--green)}
-
-.seq-row{display:flex;gap:2px;margin-bottom:3px}
-.seq-step{flex:1;height:9px;background:var(--pad-base);border-radius:1px;
-  border:1px solid #2a2a27;cursor:pointer;touch-action:manipulation;
-  transition:all .04s;min-width:0}
-.seq-step.on{background:var(--orange);border-color:var(--orange-dim)}
-.seq-step.current{outline:1px solid var(--green)}
-.seq-step.on.current{background:var(--green);border-color:#3a9050}
-
-/* ── BOTTOM STRIP ── */
-.bottom-strip{display:flex;align-items:center;justify-content:space-between;
-  padding:4px 20px 2px 20px;flex-shrink:0}
-.input-jack{display:flex;align-items:center;gap:4px;font-size:7px;
-  color:var(--cream-dim);letter-spacing:.1em;text-transform:uppercase}
-.jack{width:11px;height:11px;border-radius:50%;background:#0d0d0c;
-  border:2px solid #404040;box-shadow:inset 0 1px 2px rgba(0,0,0,.9)}
-
-.bottom-controls{display:flex;flex-direction:column;align-items:center;gap:4px}
-.pitch-row{display:flex;gap:5px;align-items:center}
-.pitch-btn{width:clamp(28px,7.5vw,34px);height:clamp(28px,7.5vw,34px);
-  background:var(--pad-base);border:1px solid var(--border);border-radius:3px;
-  border-bottom:2px solid rgba(0,0,0,.4);display:flex;align-items:center;
-  justify-content:center;color:var(--cream-dim);font-size:14px;
-  cursor:pointer;touch-action:manipulation;transition:all .06s}
-.pitch-btn:active{transform:translateY(1px);background:var(--orange);color:#fff;border-bottom-width:0}
-.tune-label{font-size:7px;color:var(--cream-dim);letter-spacing:.1em;text-transform:uppercase}
-.load-hint-text{font-size:7px;color:var(--cream-dim);letter-spacing:.1em;opacity:.5;
-  text-transform:uppercase;cursor:pointer;touch-action:manipulation;
-  text-decoration:underline;text-underline-offset:2px}
-.load-hint-text:active{opacity:1;color:var(--orange)}
-input[type=file]{display:none}
-
-/* ══════════════════════════════════════════
-   LONG PRESS CONTEXT MENU
-══════════════════════════════════════════ */
-.ctx-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);
-  display:flex;align-items:center;justify-content:center;
-  z-index:60;opacity:0;pointer-events:none;transition:opacity .18s;touch-action:none}
-.ctx-overlay.show{opacity:1;pointer-events:all}
-
-.ctx-box{background:var(--panel2);border:1px solid var(--border);
-  border-radius:10px;padding:16px 18px;min-width:230px;
-  display:flex;flex-direction:column;gap:10px}
-
-.ctx-title{display:flex;align-items:center;justify-content:space-between}
-.ctx-pad-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;
-  font-size:20px;color:var(--cream);letter-spacing:.05em}
-.ctx-pad-meta{font-size:8px;color:var(--cream-dim);letter-spacing:.12em;text-transform:uppercase}
-
-.ctx-divider{height:1px;background:var(--border)}
-
-.ctx-actions{display:flex;flex-direction:column;gap:6px}
-.ctx-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;
-  background:var(--pad-base);border:1px solid var(--border);border-radius:5px;
-  border-bottom:2px solid rgba(0,0,0,.5);cursor:pointer;touch-action:manipulation;
-  transition:all .06s}
-.ctx-btn:active{transform:translateY(1px);border-bottom-width:0;
-  background:#3a3a37;border-color:#555}
-.ctx-btn.danger:active{background:#3a1010;border-color:var(--red)}
-.ctx-btn.primary:active{background:var(--orange-dim)}
-
-.ctx-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0}
-.ctx-text{display:flex;flex-direction:column}
-.ctx-text-main{font-size:9px;color:var(--cream);letter-spacing:.1em;text-transform:uppercase}
-.ctx-text-sub{font-size:7px;color:var(--cream-dim);letter-spacing:.08em;margin-top:1px}
-
-.ctx-cancel{text-align:center;font-size:8px;color:var(--cream-dim);
-  letter-spacing:.15em;text-transform:uppercase;padding:6px;
-  cursor:pointer;touch-action:manipulation;opacity:.6}
-.ctx-cancel:active{opacity:1;color:var(--cream)}
-
-/* ══════════════════════════════════════════
-   RENAME DIALOG
-══════════════════════════════════════════ */
-.rename-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);
-  display:flex;align-items:center;justify-content:center;
-  z-index:70;opacity:0;pointer-events:none;transition:opacity .15s;touch-action:none}
-.rename-overlay.show{opacity:1;pointer-events:all}
-.rename-box{background:var(--panel2);border:1px solid var(--border);
-  border-radius:10px;padding:20px;min-width:240px;display:flex;flex-direction:column;gap:12px}
-.rename-title{font-size:9px;letter-spacing:.2em;color:var(--orange);text-transform:uppercase}
-.rename-input{background:#090d07;border:1px solid #1e3018;border-radius:4px;
-  padding:8px 12px;color:var(--green);font-family:'Share Tech Mono',monospace;
-  font-size:16px;letter-spacing:.05em;width:100%;
-  text-shadow:0 0 8px rgba(78,203,113,.4);caret-color:var(--green)}
-.rename-input:focus{outline:none;border-color:#3a6030}
-.rename-btn-row{display:flex;gap:8px}
-.rename-btn{flex:1;padding:9px;background:var(--pad-base);border:1px solid var(--border);
-  border-radius:4px;border-bottom:2px solid rgba(0,0,0,.5);color:var(--cream);
-  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.12em;
-  text-transform:uppercase;cursor:pointer;touch-action:manipulation;text-align:center}
-.rename-btn.primary{background:var(--orange);border-color:var(--orange-dim)}
-.rename-btn:active{transform:translateY(1px);border-bottom-width:0}
-
-/* ══════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════ */
-.toast{position:fixed;bottom:calc(max(env(safe-area-inset-bottom),8px) + 18px);
-  left:50%;transform:translateX(-50%) translateY(6px);
-  background:rgba(22,22,20,.96);border:1px solid var(--orange-dim);color:var(--orange);
-  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;
-  padding:5px 14px;border-radius:2px;opacity:0;
-  transition:opacity .2s,transform .2s;pointer-events:none;z-index:100;
-  text-transform:uppercase;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.blink{animation:blink 1s infinite}
-</style>
+    /* TOAST */
+    .toast{position:fixed;bottom:calc(max(env(safe-area-inset-bottom),8px) + 16px);left:50%;transform:translateX(-50%) translateY(6px);background:rgba(22,22,20,.96);border:1px solid var(--orange-dim);color:var(--orange);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;padding:5px 14px;border-radius:2px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:100;text-transform:uppercase;white-space:nowrap}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+    .blink{animation:blink 1s infinite}
+  </style>
 </head>
 <body>
 <div class="device">
   <div class="screw tl"></div><div class="screw tr"></div>
   <div class="screw bl"></div><div class="screw br"></div>
-
-  <!-- Header -->
   <div class="header">
     <div class="brand">
       <span class="brand-name">K.O.</span>
@@ -329,8 +247,6 @@ input[type=file]{display:none}
       <div class="led" id="ledPlay"></div>
     </div>
   </div>
-
-  <!-- Displays -->
   <div class="display-row">
     <div class="display">
       <div class="display-label">sample</div>
@@ -342,32 +258,13 @@ input[type=file]{display:none}
       <canvas id="waveCanvas" width="180" height="40"></canvas>
     </div>
   </div>
-
-  <!-- Controls -->
   <div class="controls-row">
     <div class="knob-group">
-      <div class="knob-wrap">
-        <div class="knob" id="knobVol" data-label="vol"></div>
-        <span class="knob-label">vol</span>
-        <span class="knob-value" id="valVol">80</span>
-      </div>
-      <div class="knob-wrap">
-        <div class="knob" id="knobPitch" data-label="pitch"></div>
-        <span class="knob-label">pitch</span>
-        <span class="knob-value" id="valPitch">0</span>
-      </div>
-      <div class="knob-wrap">
-        <div class="knob" id="knobAttack" data-label="attack"></div>
-        <span class="knob-label">atk</span>
-        <span class="knob-value" id="valAttack">20</span>
-      </div>
-      <div class="knob-wrap">
-        <div class="knob" id="knobReverb" data-label="reverb"></div>
-        <span class="knob-label">rev</span>
-        <span class="knob-value" id="valReverb">0</span>
-      </div>
+      <div class="knob-wrap"><div class="knob" id="knobVol" data-label="vol"></div><span class="knob-label">vol</span><span class="knob-value" id="valVol">80</span></div>
+      <div class="knob-wrap"><div class="knob" id="knobPitch" data-label="pitch"></div><span class="knob-label">pitch</span><span class="knob-value" id="valPitch">0</span></div>
+      <div class="knob-wrap"><div class="knob" id="knobAttack" data-label="attack"></div><span class="knob-label">atk</span><span class="knob-value" id="valAttack">20</span></div>
+      <div class="knob-wrap"><div class="knob" id="knobReverb" data-label="reverb"></div><span class="knob-label">rev</span><span class="knob-value" id="valReverb">0</span></div>
     </div>
-
     <div class="btn-group">
       <div class="btn-row">
         <button class="btn active" id="btnA">A</button>
@@ -380,45 +277,26 @@ input[type=file]{display:none}
         <button class="btn" id="btnRev">REV</button>
       </div>
     </div>
-
     <div class="transport-row">
-      <div class="bpm-display">
-        <div class="bpm-num" id="bpmNum">120</div>
-        <div class="bpm-label">bpm</div>
-      </div>
+      <div class="bpm-display"><div class="bpm-num" id="bpmNum">120</div><div class="bpm-label">bpm</div></div>
       <div class="transport-btn" id="btnBpmDown">–</div>
       <div class="transport-btn" id="btnBpmUp">+</div>
       <div class="transport-btn rec" id="btnRec">●</div>
       <div class="transport-btn play" id="btnPlay">▶</div>
     </div>
   </div>
-
-  <div class="divider"></div>
-
-  <!-- Pads + Side -->
+  <div class="divider-el"></div>
   <div class="pad-section">
     <div class="pad-grid" id="padGrid"></div>
-
     <div class="side-panel">
-      <div class="side-section">
-        <span class="side-label">level</span>
-        <div class="vol-bars" id="vuMeter"></div>
-      </div>
-      <div class="side-section" style="flex:1">
-        <div class="seq-header">
-          <div class="seq-label">seq · <span id="seqTrack" style="color:var(--orange)">—</span></div>
-          <div class="seq-mode-dot" id="seqModeDot"></div>
-        </div>
-        <div id="seqGrid"></div>
-        <div style="display:flex;gap:4px;margin-top:6px">
-          <button class="btn" style="flex:1;font-size:7px" id="btnClr">CLR</button>
-          <button class="btn" style="flex:1;font-size:7px" id="btnRnd">RND</button>
-        </div>
-      </div>
+      <div class="side-section"><span class="side-label">level</span><div class="vol-bars" id="vuMeter"></div></div>
+      <div class="side-section seq-mobile-wrap" style="flex:1;overflow:hidden"><div id="seqMobile"></div></div>
     </div>
   </div>
-
-  <!-- Bottom -->
+  <div class="seq-desktop-panel" id="seqDesktopPanel">
+    <div class="vu-desktop-row vol-bars" id="vuDesktop"></div>
+    <div id="seqDesktop"></div>
+  </div>
   <div class="bottom-strip">
     <div class="input-jack"><div class="jack"></div>IN</div>
     <div class="bottom-controls">
@@ -434,63 +312,67 @@ input[type=file]{display:none}
   </div>
 </div>
 
-<!-- ── Context menu overlay ── -->
+<!-- CONTEXT MENU -->
 <div class="ctx-overlay" id="ctxOverlay">
   <div class="ctx-box">
     <div class="ctx-title">
       <span class="ctx-pad-name" id="ctxPadName">KICK</span>
-      <span class="ctx-pad-meta">PAD <span id="ctxPadNum">1</span> · BANK <span id="ctxBankName">A</span></span>
+      <span class="ctx-pad-meta">PAD <span id="ctxPadNum">1</span> · <span id="ctxBankName">A</span></span>
     </div>
     <div class="ctx-divider"></div>
     <div class="ctx-actions">
-      <div class="ctx-btn primary" id="ctxLoad">
-        <span class="ctx-icon">▸</span>
-        <div class="ctx-text">
-          <span class="ctx-text-main">Load sample</span>
-          <span class="ctx-text-sub">Replace with audio file</span>
-        </div>
-      </div>
-      <div class="ctx-btn" id="ctxRename">
-        <span class="ctx-icon">✎</span>
-        <div class="ctx-text">
-          <span class="ctx-text-main">Rename pad</span>
-          <span class="ctx-text-sub">Change display label</span>
-        </div>
-      </div>
-      <div class="ctx-btn" id="ctxCopy">
-        <span class="ctx-icon">⎘</span>
-        <div class="ctx-text">
-          <span class="ctx-text-main">Copy pattern</span>
-          <span class="ctx-text-sub" id="ctxCopyMeta">Copy seq steps</span>
-        </div>
-      </div>
-      <div class="ctx-btn" id="ctxPaste">
-        <span class="ctx-icon">⎗</span>
-        <div class="ctx-text">
-          <span class="ctx-text-main">Paste pattern</span>
-          <span class="ctx-text-sub" id="ctxPasteMeta">No clipboard</span>
-        </div>
-      </div>
-      <div class="ctx-btn" id="ctxClearPad">
-        <span class="ctx-icon">⊘</span>
-        <div class="ctx-text">
-          <span class="ctx-text-main">Clear steps</span>
-          <span class="ctx-text-sub">Erase this pad's pattern</span>
-        </div>
-      </div>
-      <div class="ctx-btn danger" id="ctxRemoveSample">
-        <span class="ctx-icon">✕</span>
-        <div class="ctx-text">
-          <span class="ctx-text-main">Remove sample</span>
-          <span class="ctx-text-sub" id="ctxRemoveMeta">Revert to synth sound</span>
-        </div>
-      </div>
+      <div class="ctx-btn primary" id="ctxSettings"><span class="ctx-icon">⚙</span><div class="ctx-text"><span class="ctx-text-main">Pad settings</span><span class="ctx-text-sub">Volume, pitch, pan, decay, note</span></div></div>
+      <div class="ctx-btn" id="ctxLoad"><span class="ctx-icon">▸</span><div class="ctx-text"><span class="ctx-text-main">Load sample</span><span class="ctx-text-sub">Replace with audio file</span></div></div>
+      <div class="ctx-btn" id="ctxRename"><span class="ctx-icon">✎</span><div class="ctx-text"><span class="ctx-text-main">Rename pad</span><span class="ctx-text-sub" id="ctxCurrentName">—</span></div></div>
+      <div class="ctx-btn" id="ctxCopy"><span class="ctx-icon">⎘</span><div class="ctx-text"><span class="ctx-text-main">Copy pattern</span><span class="ctx-text-sub" id="ctxCopyMeta">—</span></div></div>
+      <div class="ctx-btn" id="ctxPaste"><span class="ctx-icon">⎗</span><div class="ctx-text"><span class="ctx-text-main">Paste pattern</span><span class="ctx-text-sub" id="ctxPasteMeta">—</span></div></div>
+      <div class="ctx-btn" id="ctxClearPad"><span class="ctx-icon">⊘</span><div class="ctx-text"><span class="ctx-text-main">Clear all bars</span><span class="ctx-text-sub">Erase all 4 bars</span></div></div>
+      <div class="ctx-btn danger" id="ctxRemoveSample"><span class="ctx-icon">✕</span><div class="ctx-text"><span class="ctx-text-main">Remove sample</span><span class="ctx-text-sub" id="ctxRemoveMeta">—</span></div></div>
     </div>
     <div class="ctx-cancel" id="ctxCancel">CANCEL</div>
   </div>
 </div>
 
-<!-- ── Rename dialog ── -->
+<!-- PAD SETTINGS -->
+<div class="pad-settings-overlay" id="padSettingsOverlay">
+  <div class="pad-settings-box">
+    <div class="ps-header">
+      <div class="ps-title"><span class="ps-pad-name" id="psPadName">KICK</span><span class="ps-subtitle">PAD <span id="psPadNum">1</span> · BANK <span id="psBankName">A</span></span></div>
+      <div class="ps-close-btn" id="psCloseBtn">✕</div>
+    </div>
+    <div class="ps-divider"></div>
+    <div class="ps-knobs">
+      <div class="ps-knob-wrap"><div class="ps-knob" id="psKnobVol" data-ps="vol"></div><span class="ps-knob-label">volume</span><span class="ps-knob-value" id="psValVol">100</span></div>
+      <div class="ps-knob-wrap"><div class="ps-knob" id="psKnobPitch" data-ps="pitch"></div><span class="ps-knob-label">pitch</span><span class="ps-knob-value" id="psValPitch">0</span></div>
+      <div class="ps-knob-wrap"><div class="ps-knob" id="psKnobPan" data-ps="pan"></div><span class="ps-knob-label">pan</span><span class="ps-knob-value" id="psValPan">C</span></div>
+      <div class="ps-knob-wrap"><div class="ps-knob" id="psKnobDecay" data-ps="decay"></div><span class="ps-knob-label">decay</span><span class="ps-knob-value" id="psValDecay">100</span></div>
+    </div>
+    <div class="ps-row">
+      <span class="ps-row-label">root note</span>
+      <div class="ps-note-display" id="psNoteDisplay">C3</div>
+      <div class="ps-mini-btns">
+        <div class="ps-mini-btn" id="psNoteDown">▾</div>
+        <div class="ps-mini-btn" id="psNoteUp">▴</div>
+      </div>
+    </div>
+    <div id="psWaveSection">
+      <div class="ps-wave-label">waveform</div>
+      <div class="ps-wave-wrap"><canvas id="psWaveCanvas" width="280" height="50"></canvas></div>
+    </div>
+    <div class="ps-toggles">
+      <div class="ps-toggle" id="psToggleReverse">REV</div>
+      <div class="ps-toggle" id="psToggleLoop">LOOP</div>
+      <div class="ps-toggle" id="psToggleMute">MUTE</div>
+      <div class="ps-toggle" id="psToggleSolo">SOLO</div>
+    </div>
+    <div class="ps-footer">
+      <div class="ps-btn" id="psReset">RESET</div>
+      <div class="ps-btn primary" id="psClose2">DONE</div>
+    </div>
+  </div>
+</div>
+
+<!-- RENAME -->
 <div class="rename-overlay" id="renameOverlay">
   <div class="rename-box">
     <div class="rename-title">rename pad <span id="renamePadNum">1</span></div>
@@ -503,706 +385,382 @@ input[type=file]{display:none}
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script>
-// ═══════════════════════════════════════════
-// AUDIO — полифоничный (каждый звук независим)
-// ═══════════════════════════════════════════
-const AC = window.AudioContext || window.webkitAudioContext;
-let ctx = null, reverbImpulse = null;
+  'use strict';
+  const AC=window.AudioContext||window.webkitAudioContext;
+  let ctx=null,reverbImpulse=null;
+  function ensureCtx(){if(!ctx)ctx=new AC();if(ctx.state==='suspended')ctx.resume();}
+  function getRI(){if(reverbImpulse)return reverbImpulse;const len=ctx.sampleRate*2;reverbImpulse=ctx.createBuffer(2,len,ctx.sampleRate);for(let c=0;c<2;c++){const d=reverbImpulse.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.8);}return reverbImpulse;}
+  function sendRev(node,amt){const cv=ctx.createConvolver();cv.buffer=getRI();const g=ctx.createGain();g.gain.value=amt*.6;node.connect(cv);cv.connect(g);g.connect(ctx.destination);}
 
-function ensureCtx() {
-  if (!ctx) ctx = new AC();
-  if (ctx.state === 'suspended') ctx.resume();
-}
+  const DEFAULT_NAMES=['KICK','SNARE','HIHAT','CLAP','PERC1','PERC2','BASS','LEAD','FX1','FX2','CHORD','ARP','VOX','NOISE','STAB','LOOP'];
+  const PAD_COLORS=['#e03535','#e03535','#f4611a','#f4611a','#4ecb71','#4ecb71','#4a9ff4','#4a9ff4','#c47af4','#c47af4','#f4e14a','#f4e14a','#f4611a','#4ecb71','#4a9ff4','#e03535'];
+  const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  function midiName(n){return NOTES[n%12]+Math.floor(n/12-1);}
 
-function getReverbImpulse() {
-  if (reverbImpulse) return reverbImpulse;
-  const len = ctx.sampleRate * 2;
-  reverbImpulse = ctx.createBuffer(2, len, ctx.sampleRate);
-  for (let c = 0; c < 2; c++) {
-    const d = reverbImpulse.getChannelData(c);
-    for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 1.8);
+  const N=16,BARS=4,SPB=16,TOTAL=BARS*SPB;
+  let bank='A',mode={chop:false,loop:false,rev:false},bpm=120,playing=false,recording=false;
+  let activeTrack=0,activeBar=0,seqStep=-1,seqIv=null,ctxPad=null,psPad=null,clipboard=null,renamePad=null;
+  const samples={A:{},B:{},C:{}};
+  let knob={vol:80,pitch:50,attack:20,reverb:0};
+  let padNames=[...DEFAULT_NAMES];
+  const defPS=()=>({vol:100,pitch:50,pan:50,decay:100,note:60,reverse:false,loop:false,mute:false,solo:false});
+  const ps={A:Array.from({length:N},defPS),B:Array.from({length:N},defPS),C:Array.from({length:N},defPS)};
+  const mkSeq=()=>Array.from({length:N},()=>Array(TOTAL).fill(false));
+  const seq={A:mkSeq(),B:mkSeq(),C:mkSeq()};
+
+  function playSample(i){
+    ensureCtx();
+    const p=ps[bank][i];
+    if(p.mute)return;
+    const anySolo=ps[bank].some(x=>x.solo);
+    if(anySolo&&!p.solo)return;
+    const buf=samples[bank][i];
+    if(!buf){makeSynth(i);return;}
+    const src=ctx.createBufferSource();
+    if(p.reverse||mode.rev){const r=ctx.createBuffer(buf.numberOfChannels,buf.length,buf.sampleRate);for(let c=0;c<buf.numberOfChannels;c++)r.getChannelData(c).set(buf.getChannelData(c).slice().reverse());src.buffer=r;}
+    else src.buffer=buf;
+    src.loop=p.loop||!!mode.loop;
+    src.playbackRate.value=Math.pow(2,(knob.pitch-50)/50)*Math.pow(2,(p.pitch-50)/50)*Math.pow(2,(p.note-60)/12);
+    const g=ctx.createGain();g.gain.value=(knob.vol/100)*(p.vol/100);
+    const decT=Math.max(0.05,(p.decay/100)*2.5);
+    g.gain.setValueAtTime(g.gain.value,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+decT);
+    const pan=ctx.createStereoPanner();pan.pan.value=(p.pan-50)/50;
+    src.connect(g);g.connect(pan);pan.connect(ctx.destination);
+    if(knob.reverb>5)sendRev(pan,knob.reverb/100);
+    src.start();if(src.loop)src.stop(ctx.currentTime+2);
+    vuTrig((knob.vol/100)*(p.vol/100));waveDrawBuf(buf,'waveCanvas');
   }
-  return reverbImpulse;
-}
-
-function sendToReverb(node, amount) {
-  const conv = ctx.createConvolver();
-  conv.buffer = getReverbImpulse();
-  const g = ctx.createGain();
-  g.gain.value = amount * 0.6;
-  node.connect(conv); conv.connect(g); g.connect(ctx.destination);
-}
-
-function playSample(padIndex) {
-  ensureCtx();
-  const buf = samples[currentBank][padIndex];
-  if (!buf) { makeSynth(padIndex); return; }
-
-  const src = ctx.createBufferSource();
-  if (mode.rev) {
-    const rev = ctx.createBuffer(buf.numberOfChannels, buf.length, buf.sampleRate);
-    for (let c = 0; c < buf.numberOfChannels; c++)
-      rev.getChannelData(c).set(buf.getChannelData(c).slice().reverse());
-    src.buffer = rev;
-  } else { src.buffer = buf; }
-
-  src.loop = !!mode.loop;
-  src.playbackRate.value = Math.pow(2, (knobState.pitch - 50) / 50);
-  const gain = ctx.createGain();
-  gain.gain.value = knobState.vol / 100;
-  src.connect(gain); gain.connect(ctx.destination);
-  if (knobState.reverb > 5) sendToReverb(gain, knobState.reverb / 100);
-  src.start();
-  if (src.loop) src.stop(ctx.currentTime + 2);
-  triggerVU(knobState.vol / 100);
-  drawWaveformFromBuffer(buf);
-}
-
-function makeSynth(padIndex) {
-  ensureCtx();
-  const pitchMult = Math.pow(2, (knobState.pitch - 50) / 50);
-  const vol = knobState.vol / 100;
-  const atk = Math.max(0.001, knobState.attack / 1000);
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = ['sawtooth','square','triangle','sine'][Math.floor(padIndex/4)%4];
-  osc.frequency.value = [55,110,220,880,330,660,80,440,523,659,262,392,528,200,180,100][padIndex] * pitchMult;
-  osc.connect(gain); gain.connect(ctx.destination);
-  if (knobState.reverb > 5) sendToReverb(gain, knobState.reverb / 100);
-  gain.gain.setValueAtTime(0, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + atk);
-  const dur = [0.1,0.18,0.07,0.12,0.22,0.28,0.45,0.55,0.3,0.3,0.85,0.65,0.7,0.14,0.2,1.0][padIndex];
-  if (padIndex === 0) {
-    osc.frequency.setValueAtTime(150*pitchMult, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(38*pitchMult, ctx.currentTime+0.09);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.14);
-    osc.start(); osc.stop(ctx.currentTime+0.16);
-  } else {
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
-    osc.start(); osc.stop(ctx.currentTime+dur+0.02);
+  function makeSynth(i){
+    ensureCtx();
+    const p=ps[bank][i];if(p.mute)return;
+    const pp=Math.pow(2,(knob.pitch-50)/50)*Math.pow(2,(p.pitch-50)/50)*Math.pow(2,(p.note-60)/12);
+    const vol=(knob.vol/100)*(p.vol/100);const atk=Math.max(0.001,knob.attack/1000);
+    const osc=ctx.createOscillator();const g=ctx.createGain();const pan=ctx.createStereoPanner();
+    pan.pan.value=(p.pan-50)/50;
+    osc.type=['sawtooth','square','triangle','sine'][Math.floor(i/4)%4];
+    osc.frequency.value=[55,110,220,880,330,660,80,440,523,659,262,392,528,200,180,100][i]*pp;
+    osc.connect(g);g.connect(pan);pan.connect(ctx.destination);
+    if(knob.reverb>5)sendRev(pan,knob.reverb/100);
+    g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(vol,ctx.currentTime+atk);
+    const dur=[0.1,0.18,0.07,0.12,0.22,0.28,0.45,0.55,0.3,0.3,0.85,0.65,0.7,0.14,0.2,1.0][i];
+    const decT=(p.decay/100)*Math.max(dur,0.1);
+    if(i===0){osc.frequency.setValueAtTime(150*pp,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(38*pp,ctx.currentTime+0.09);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.14);osc.start();osc.stop(ctx.currentTime+0.18);}
+    else{g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+decT);osc.start();osc.stop(ctx.currentTime+decT+0.02);}
+    vuTrig(vol);
   }
-  triggerVU(vol);
-}
 
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
-const DEFAULT_NAMES = ['KICK','SNARE','HIHAT','CLAP','PERC1','PERC2','BASS','LEAD',
-                       'FX1','FX2','CHORD','ARP','VOX','NOISE','STAB','LOOP'];
-const PAD_COLORS    = ['#e03535','#e03535','#f4611a','#f4611a','#4ecb71','#4ecb71',
-                       '#4a9ff4','#4a9ff4','#c47af4','#c47af4','#f4e14a','#f4e14a',
-                       '#f4611a','#4ecb71','#4a9ff4','#e03535'];
+  // ── PADS
+  function buildPads(){
+    const grid=document.getElementById('padGrid');grid.innerHTML='';
+    for(let i=0;i<N;i++){
+      const pad=document.createElement('div');pad.className='pad';pad.dataset.index=i;
+      pad.innerHTML=`<div class="pad-num">${i+1}</div><div class="pad-indicator" style="background:${PAD_COLORS[i]}"></div><div class="pad-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" class="ring-progress"/></svg></div><div class="pad-glow"></div><div class="pad-name">${padNames[i]}</div>`;
+      setupLongPress(pad,i,()=>openCtx(i));
+      pad.addEventListener('touchstart',e=>{e.preventDefault();hitPad(i,pad);},{passive:false});
+      pad.addEventListener('mousedown',e=>{if(e.button!==0)return;e.preventDefault();hitPad(i,pad);});
+      pad.addEventListener('contextmenu',e=>{e.preventDefault();openCtx(i);});
+      grid.appendChild(pad);
+    }
+    refreshPads();
+  }
 
-// Имена пэдов (редактируемые)
-let padNames = [...DEFAULT_NAMES];
+  const LONG=620;
+  function setupLongPress(pad,idx,cb){
+    let t0=0,af=null,fired=false;
+    function start(){fired=false;t0=Date.now();pad.classList.add('long-pressing');af=requestAnimationFrame(tick);}
+    function tick(){
+      const p=Math.min((Date.now()-t0)/LONG,1);
+      const c=pad.querySelector('.ring-progress');if(c)c.style.strokeDashoffset=200*(1-p);
+      if(p<1){af=requestAnimationFrame(tick);}else if(!fired){fired=true;cancel();cb();}
+    }
+    function cancel(){cancelAnimationFrame(af);pad.classList.remove('long-pressing');const c=pad.querySelector('.ring-progress');if(c)c.style.strokeDashoffset=200;}
+    pad.addEventListener('touchstart',start,{passive:true});
+    ['touchend','touchmove','touchcancel'].forEach(ev=>pad.addEventListener(ev,cancel,{passive:true}));
+    pad.addEventListener('mousedown',start);pad.addEventListener('mouseup',cancel);pad.addEventListener('mouseleave',cancel);
+  }
 
-const NUM_PADS = 16;
-let currentBank = 'A';
-let mode = { chop:false, loop:false, rev:false };
-let bpm = 120;
-let isPlaying = false;
-let isRecording = false;
-let activeSeqTrack = 0;
-const samples = { A:{}, B:{}, C:{} };
-let knobState = { vol:80, pitch:50, attack:20, reverb:0 };
+  function hitPad(i,el){
+    ensureCtx();
+    if(!el)el=document.querySelector(`.pad[data-index="${i}"]`);
+    el.classList.add('hitting');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('hitting'),130);
+    playSample(i);
+    if(recording){const s=seqStep>=0?seqStep:0;seq[bank][i][s]=true;refreshPadHasSteps();}
+    activeTrack=i;
+    document.querySelectorAll('.seq-track-name').forEach(x=>x.textContent=i+1);
+    document.getElementById('dispMain').textContent=padNames[i];
+    document.getElementById('dispSub').textContent=samples[bank][i]?'sample':'synth';
+    buildSeq();
+  }
 
-// ── Секвенсор: 16 пэдов × 16 шагов, для каждого банка отдельно
-const seqData = {
-  A: Array.from({length:NUM_PADS}, () => Array(16).fill(false)),
-  B: Array.from({length:NUM_PADS}, () => Array(16).fill(false)),
-  C: Array.from({length:NUM_PADS}, () => Array(16).fill(false)),
-};
-
-let seqStep = -1;
-let seqInterval = null;
-let clipboard = null; // для copy/paste паттернов
-
-// ═══════════════════════════════════════════
-// PADS
-// ═══════════════════════════════════════════
-function buildPads() {
-  const grid = document.getElementById('padGrid');
-  grid.innerHTML = '';
-  for (let i = 0; i < NUM_PADS; i++) {
-    const pad = document.createElement('div');
-    pad.className = 'pad';
-    pad.dataset.index = i;
-    pad.innerHTML = `
-      <div class="pad-num">${i+1}</div>
-      <div class="pad-indicator" style="background:${PAD_COLORS[i]}"></div>
-      <div class="pad-ring">
-        <svg viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="46" class="ring-progress"/>
-        </svg>
-      </div>
-      <div class="pad-glow"></div>
-      <div class="pad-name">${padNames[i]}</div>
-    `;
-
-    // ── Instant touch
-    pad.addEventListener('touchstart', e => {
-      e.preventDefault();
-      if (!longPressHandled) hitPad(i, pad);
-    }, { passive:false });
-
-    pad.addEventListener('mousedown', e => {
-      if (e.button !== 0) return;
-      e.preventDefault();
-      if (!longPressHandled) hitPad(i, pad);
+  function refreshPads(){
+    document.querySelectorAll('.pad').forEach((p,i)=>{
+      p.classList.toggle('has-sample',!!samples[bank][i]);
+      p.querySelector('.pad-name').textContent=padNames[i];
+      p.classList.toggle('muted',ps[bank][i].mute);
+      p.style.opacity=ps[bank][i].mute?'0.4':'1';
     });
-
-    // ── Long press с визуальным индикатором (кольцо)
-    setupLongPress(pad, i);
-
-    grid.appendChild(pad);
-  }
-  refreshPadStates();
-}
-
-// Long press — анимированное кольцо + меню
-const LONG_MS = 600;
-let longPressHandled = false;
-let activeLongPad = null;
-
-function setupLongPress(pad, index) {
-  let startTime = 0;
-  let animFrame = null;
-  let fired = false;
-
-  function startPress() {
-    fired = false;
-    longPressHandled = false;
-    startTime = Date.now();
-    activeLongPad = pad;
-    pad.classList.add('long-pressing');
-    animFrame = requestAnimationFrame(animRing);
-  }
-
-  function animRing() {
-    const elapsed = Date.now() - startTime;
-    const progress = Math.min(elapsed / LONG_MS, 1);
-    const circle = pad.querySelector('.ring-progress');
-    if (circle) {
-      const circumference = 200;
-      circle.style.strokeDashoffset = circumference * (1 - progress);
-    }
-    if (progress < 1) {
-      animFrame = requestAnimationFrame(animRing);
-    } else if (!fired) {
-      fired = true;
-      longPressHandled = true;
-      cancelPress();
-      openCtxMenu(index);
-    }
-  }
-
-  function cancelPress() {
-    cancelAnimationFrame(animFrame);
-    pad.classList.remove('long-pressing');
-    const circle = pad.querySelector('.ring-progress');
-    if (circle) circle.style.strokeDashoffset = 200;
-    activeLongPad = null;
-    // reset flag after a tick so the touchstart hitPad doesn't fire on same touch
-    setTimeout(() => { longPressHandled = false; }, 50);
-  }
-
-  pad.addEventListener('touchstart', startPress, { passive:true });
-  pad.addEventListener('touchend', cancelPress,   { passive:true });
-  pad.addEventListener('touchmove', cancelPress,  { passive:true });
-  pad.addEventListener('touchcancel', cancelPress,{ passive:true });
-  pad.addEventListener('mousedown', () => startPress(), );
-  pad.addEventListener('mouseup',   cancelPress);
-  pad.addEventListener('mouseleave', cancelPress);
-  pad.addEventListener('contextmenu', e => { e.preventDefault(); openCtxMenu(index); });
-}
-
-function hitPad(index, padEl) {
-  ensureCtx();
-  if (!padEl) padEl = document.querySelector(`.pad[data-index="${index}"]`);
-
-  padEl.classList.add('hitting');
-  clearTimeout(padEl._t);
-  padEl._t = setTimeout(() => padEl.classList.remove('hitting'), 130);
-
-  playSample(index);
-
-  // ── Запись в секвенсор
-  // Если PLAY запущен — пишем в текущий шаг
-  // Если только REC без PLAY — пишем в шаг 0 (первый шаг)
-  if (isRecording) {
-    const step = seqStep >= 0 ? seqStep : 0;
-    seqData[currentBank][index][step] = true;
     refreshPadHasSteps();
   }
+  function refreshPadHasSteps(){document.querySelectorAll('.pad').forEach((p,i)=>p.classList.toggle('has-steps',seq[bank][i].some(Boolean)));}
 
-  activeSeqTrack = index;
-  document.getElementById('seqTrack').textContent = index + 1;
-  document.getElementById('dispMain').textContent = padNames[index];
-  document.getElementById('dispSub').textContent = samples[currentBank][index] ? 'sample' : 'synth';
-  buildSeqGrid();
-}
+  // ── SEQUENCER RENDERER
+  function renderSeq(container,compact){
+    container.innerHTML='';
+    const wrap=document.createElement('div');wrap.className='seq-wrap';
+    // top row
+    const top=document.createElement('div');top.className='seq-top-row';
+    const lbl=document.createElement('div');lbl.className='seq-label-text';
+    lbl.innerHTML=`seq · <span class="seq-track-name" style="color:var(--orange)">${activeTrack+1}</span>`;
+    const tabs=document.createElement('div');tabs.className='bar-tabs';
+    for(let b=0;b<BARS;b++){
+      const t=document.createElement('div');
+      const barPlay=playing?Math.floor(seqStep/SPB):- 1;
+      t.className='bar-tab'+(b===activeBar?' active':'')+(seq[bank][activeTrack].slice(b*SPB,(b+1)*SPB).some(Boolean)?' has-data':'')+(barPlay===b?' current-bar':'');
+      t.textContent=b+1;const bb=b;
+      t.addEventListener('touchstart',e=>{e.preventDefault();activeBar=bb;buildSeq();},{passive:false});
+      t.addEventListener('click',()=>{activeBar=bb;buildSeq();});
+      tabs.appendChild(t);
+    }
+    const dot=document.createElement('div');
+    dot.className='seq-mode-dot'+(recording&&playing?' rec':playing?' play':recording?' rec':'');
+    top.appendChild(lbl);top.appendChild(tabs);top.appendChild(dot);wrap.appendChild(top);
 
-function refreshPadStates() {
-  document.querySelectorAll('.pad').forEach((p, i) => {
-    p.classList.toggle('has-sample', !!samples[currentBank][i]);
-    p.querySelector('.pad-name').textContent = padNames[i];
-  });
-  refreshPadHasSteps();
-}
+    // steps
+    const area=document.createElement('div');area.className='seq-steps-area';
+    const off=activeBar*SPB;
+    for(let row=0;row<2;row++){
+      const rowEl=document.createElement('div');rowEl.className='seq-row';
+      for(let col=0;col<8;col++){
+        const gs=off+row*8+col;
+        const s=document.createElement('div');
+        s.className='seq-step'+(seq[bank][activeTrack][gs]?' on':'')+(gs===seqStep?' current':'');
+        const toggle=e=>{e.preventDefault();seq[bank][activeTrack][gs]^=true;refreshPadHasSteps();buildSeq();};
+        s.addEventListener('touchstart',toggle,{passive:false});s.addEventListener('mousedown',toggle);
+        rowEl.appendChild(s);
+      }
+      area.appendChild(rowEl);
+    }
+    wrap.appendChild(area);
 
-function refreshPadHasSteps() {
-  document.querySelectorAll('.pad').forEach((p, i) => {
-    const hasSteps = seqData[currentBank][i].some(Boolean);
-    p.classList.toggle('has-steps', hasSteps);
-  });
-}
-
-// ═══════════════════════════════════════════
-// CONTEXT MENU
-// ═══════════════════════════════════════════
-let ctxPadIndex = null;
-
-function openCtxMenu(index) {
-  ctxPadIndex = index;
-  document.getElementById('ctxPadName').textContent = padNames[index];
-  document.getElementById('ctxPadNum').textContent = index + 1;
-  document.getElementById('ctxBankName').textContent = currentBank;
-
-  const hasSample = !!samples[currentBank][index];
-  document.getElementById('ctxRemoveMeta').textContent = hasSample
-    ? 'Revert to synth sound' : 'No sample loaded';
-  document.getElementById('ctxRemoveSample').style.opacity = hasSample ? '1' : '0.4';
-
-  const hasSteps = seqData[currentBank][index].some(Boolean);
-  document.getElementById('ctxCopyMeta').textContent = hasSteps
-    ? `${seqData[currentBank][index].filter(Boolean).length} active steps`
-    : 'Pattern is empty';
-
-  document.getElementById('ctxPasteMeta').textContent = clipboard
-    ? `From pad ${clipboard.fromName}` : 'Nothing copied yet';
-
-  document.getElementById('ctxOverlay').classList.add('show');
-}
-
-function closeCtxMenu() {
-  document.getElementById('ctxOverlay').classList.remove('show');
-  ctxPadIndex = null;
-}
-
-// Context actions
-document.getElementById('ctxLoad').addEventListener('click', () => {
-  closeCtxMenu();
-  setTimeout(() => document.getElementById('fileInput').click(), 100);
-});
-
-document.getElementById('ctxRename').addEventListener('click', () => {
-  closeCtxMenu();
-  openRenameDialog(ctxPadIndex ?? 0);
-  ctxPadIndex = null; // store before close resets
-});
-// fix: capture before close
-document.getElementById('ctxRename').addEventListener('touchstart', e => {
-  e.preventDefault();
-  const idx = ctxPadIndex;
-  closeCtxMenu();
-  setTimeout(() => openRenameDialog(idx), 150);
-}, { passive:false });
-
-document.getElementById('ctxCopy').addEventListener('click', () => {
-  if (ctxPadIndex === null) return;
-  clipboard = {
-    steps: [...seqData[currentBank][ctxPadIndex]],
-    fromName: padNames[ctxPadIndex],
-  };
-  showToast('copied: ' + padNames[ctxPadIndex]);
-  closeCtxMenu();
-});
-
-document.getElementById('ctxPaste').addEventListener('click', () => {
-  if (ctxPadIndex === null || !clipboard) { showToast('nothing to paste'); return; }
-  seqData[currentBank][ctxPadIndex] = [...clipboard.steps];
-  refreshPadHasSteps();
-  buildSeqGrid();
-  showToast('pasted → ' + padNames[ctxPadIndex]);
-  closeCtxMenu();
-});
-
-document.getElementById('ctxClearPad').addEventListener('click', () => {
-  if (ctxPadIndex === null) return;
-  seqData[currentBank][ctxPadIndex].fill(false);
-  refreshPadHasSteps();
-  buildSeqGrid();
-  showToast('cleared: ' + padNames[ctxPadIndex]);
-  closeCtxMenu();
-});
-
-document.getElementById('ctxRemoveSample').addEventListener('click', () => {
-  if (ctxPadIndex === null) return;
-  if (samples[currentBank][ctxPadIndex]) {
-    delete samples[currentBank][ctxPadIndex];
-    refreshPadStates();
-    drawIdleWaveform();
-    showToast('sample removed');
-  }
-  closeCtxMenu();
-});
-
-document.getElementById('ctxCancel').addEventListener('click', closeCtxMenu);
-document.getElementById('ctxCancel').addEventListener('touchstart', e => { e.preventDefault(); closeCtxMenu(); }, { passive:false });
-document.getElementById('ctxOverlay').addEventListener('touchstart', e => {
-  if (e.target === document.getElementById('ctxOverlay')) closeCtxMenu();
-}, { passive:true });
-
-// touch handlers for other ctx buttons
-['ctxLoad','ctxCopy','ctxPaste','ctxClearPad','ctxRemoveSample'].forEach(id => {
-  const el = document.getElementById(id);
-  el.addEventListener('touchstart', e => { e.preventDefault(); el.click(); }, { passive:false });
-});
-
-// ═══════════════════════════════════════════
-// RENAME DIALOG
-// ═══════════════════════════════════════════
-let renamePadIdx = null;
-
-function openRenameDialog(index) {
-  renamePadIdx = index;
-  document.getElementById('renamePadNum').textContent = index + 1;
-  const inp = document.getElementById('renameInput');
-  inp.value = padNames[index];
-  document.getElementById('renameOverlay').classList.add('show');
-  setTimeout(() => inp.focus(), 200);
-}
-
-function confirmRename() {
-  if (renamePadIdx === null) return;
-  const val = document.getElementById('renameInput').value.trim().toUpperCase();
-  if (val) {
-    padNames[renamePadIdx] = val.slice(0, 8);
-    refreshPadStates();
-    showToast('renamed → ' + padNames[renamePadIdx]);
-  }
-  document.getElementById('renameOverlay').classList.remove('show');
-  renamePadIdx = null;
-}
-
-document.getElementById('renameOk').addEventListener('click', confirmRename);
-document.getElementById('renameOk').addEventListener('touchstart', e => { e.preventDefault(); confirmRename(); }, { passive:false });
-document.getElementById('renameCancel').addEventListener('click', () => document.getElementById('renameOverlay').classList.remove('show'));
-document.getElementById('renameCancel').addEventListener('touchstart', e => { e.preventDefault(); document.getElementById('renameOverlay').classList.remove('show'); }, { passive:false });
-document.getElementById('renameInput').addEventListener('keydown', e => { if (e.key === 'Enter') confirmRename(); });
-
-// ═══════════════════════════════════════════
-// FILE LOADING
-// ═══════════════════════════════════════════
-document.getElementById('fileInput').addEventListener('change', async e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  ensureCtx();
-  const target = ctxPadIndex !== null ? ctxPadIndex : activeSeqTrack;
-  try {
-    const buf = await ctx.decodeAudioData(await file.arrayBuffer());
-    samples[currentBank][target] = buf;
-    drawWaveformFromBuffer(buf);
-    refreshPadStates();
-    document.getElementById('dispMain').textContent = padNames[target];
-    document.getElementById('dispSub').textContent = file.name.slice(0, 14);
-    showToast('loaded → ' + padNames[target]);
-  } catch { showToast('error: bad file'); }
-  e.target.value = '';
-  ctxPadIndex = null;
-});
-
-document.getElementById('loadHint').addEventListener('click', e => {
-  e.preventDefault();
-  document.getElementById('fileInput').click();
-});
-
-// ═══════════════════════════════════════════
-// KNOBS
-// ═══════════════════════════════════════════
-function setupKnobs() {
-  document.querySelectorAll('.knob').forEach(knob => {
-    const label = knob.dataset.label;
-    let startY = 0, startVal = 0;
-
-    function applyDelta(clientY) {
-      const val = Math.max(0, Math.min(100, startVal + (startY - clientY) * 0.75));
-      knobState[label] = val;
-      rotateKnob(knob, val);
-      updateKnobDisplay(knob.id, label, val);
-      if (label === 'reverb') reverbImpulse = null;
+    // bar overview (desktop only)
+    if(!compact){
+      const ov=document.createElement('div');ov.className='bar-overview';
+      for(let b=0;b<BARS;b++){
+        const mb=document.createElement('div');mb.className='bar-mini';
+        for(let s=0;s<SPB;s++){
+          const gs=b*SPB+s;const ms=document.createElement('div');
+          ms.className='bar-mini-step'+(seq[bank][activeTrack][gs]?' on':'')+(gs===seqStep?' cur':'');
+          mb.appendChild(ms);
+        }
+        ov.appendChild(mb);
+      }
+      wrap.appendChild(ov);
     }
 
-    knob.addEventListener('touchstart', e => {
-      e.preventDefault();
-      startY = e.touches[0].clientY; startVal = knobState[label];
-      const mv = ev => { ev.preventDefault(); applyDelta(ev.touches[0].clientY); };
-      const up = () => { document.removeEventListener('touchmove', mv); document.removeEventListener('touchend', up); };
-      document.addEventListener('touchmove', mv, { passive:false });
-      document.addEventListener('touchend', up);
-    }, { passive:false });
-
-    knob.addEventListener('pointerdown', e => {
-      e.preventDefault();
-      knob.setPointerCapture(e.pointerId);
-      startY = e.clientY; startVal = knobState[label];
-      const mv = ev => applyDelta(ev.clientY);
-      const up = () => { knob.removeEventListener('pointermove', mv); knob.removeEventListener('pointerup', up); };
-      knob.addEventListener('pointermove', mv);
-      knob.addEventListener('pointerup', up);
+    // actions
+    const acts=document.createElement('div');acts.className='seq-actions';
+    const btns=compact?
+            [['CLR',()=>{seq[bank][activeTrack].fill(false);refreshPadHasSteps();buildSeq();showToast('cleared');}],
+              ['RND',()=>{const o=activeBar*SPB;for(let i=o;i<o+SPB;i++)seq[bank][activeTrack][i]=Math.random()>.62;refreshPadHasSteps();buildSeq();}]]:
+            [['CLR ALL',()=>{seq[bank][activeTrack].fill(false);refreshPadHasSteps();buildSeq();}],
+              ['CLR BAR',()=>{const o=activeBar*SPB;seq[bank][activeTrack].fill(false,o,o+SPB);refreshPadHasSteps();buildSeq();}],
+              ['RND',()=>{const o=activeBar*SPB;for(let i=o;i<o+SPB;i++)seq[bank][activeTrack][i]=Math.random()>.62;refreshPadHasSteps();buildSeq();}]];
+    btns.forEach(([l,fn])=>{
+      const b=document.createElement('button');b.className='btn';b.style.cssText='flex:1;font-size:7px;padding:4px 0';b.textContent=l;
+      b.addEventListener('touchstart',e=>{e.preventDefault();fn();},{passive:false});b.addEventListener('click',fn);
+      acts.appendChild(b);
     });
+    wrap.appendChild(acts);
+    container.appendChild(wrap);
+  }
 
-    rotateKnob(knob, knobState[label]);
-    updateKnobDisplay(knob.id, label, knobState[label]);
+  function buildSeq(){
+    const m=document.getElementById('seqMobile');const d=document.getElementById('seqDesktop');
+    if(m)renderSeq(m,true);if(d)renderSeq(d,false);
+  }
+
+  // ── TICK
+  function tick(){
+    seqStep=(seqStep+1)%TOTAL;
+    const pb=Math.floor(seqStep/SPB);if(pb!==activeBar)activeBar=pb;
+    for(let p=0;p<N;p++)if(seq[bank][p][seqStep])hitPad(p);
+    buildSeq();
+    const led=document.getElementById('ledPlay');led.className='led orange';
+    setTimeout(()=>{led.className=playing?'led green':'led';},70);
+  }
+
+  // ── CONTEXT MENU
+  function openCtx(i){
+    ctxPad=i;
+    document.getElementById('ctxPadName').textContent=padNames[i];
+    document.getElementById('ctxPadNum').textContent=i+1;
+    document.getElementById('ctxBankName').textContent=bank;
+    document.getElementById('ctxCurrentName').textContent='Current: '+padNames[i];
+    const tot=seq[bank][i].filter(Boolean).length;
+    document.getElementById('ctxCopyMeta').textContent=tot?`${tot} steps across 4 bars`:'Pattern is empty';
+    document.getElementById('ctxPasteMeta').textContent=clipboard?`From ${clipboard.fromName}`:'Nothing copied';
+    document.getElementById('ctxRemoveMeta').textContent=samples[bank][i]?'Revert to synth':'No sample loaded';
+    document.getElementById('ctxRemoveSample').style.opacity=samples[bank][i]?'1':'0.4';
+    document.getElementById('ctxOverlay').classList.add('show');
+  }
+  function closeCtx(){document.getElementById('ctxOverlay').classList.remove('show');ctxPad=null;}
+  function tb(id,fn){const el=document.getElementById(id);el.addEventListener('touchstart',e=>{e.preventDefault();fn();},{passive:false});el.addEventListener('click',fn);}
+  tb('ctxSettings',()=>{const i=ctxPad;closeCtx();setTimeout(()=>openPS(i),100);});
+  tb('ctxLoad',()=>{closeCtx();setTimeout(()=>document.getElementById('fileInput').click(),100);});
+  tb('ctxRename',()=>{const i=ctxPad;closeCtx();setTimeout(()=>openRename(i),150);});
+  tb('ctxCopy',()=>{if(ctxPad===null)return;clipboard={steps:[...seq[bank][ctxPad]],fromName:padNames[ctxPad]};showToast('copied: '+padNames[ctxPad]);closeCtx();});
+  tb('ctxPaste',()=>{if(!clipboard){showToast('nothing to paste');return;}seq[bank][ctxPad]=[...clipboard.steps];refreshPadHasSteps();buildSeq();showToast('pasted → '+padNames[ctxPad]);closeCtx();});
+  tb('ctxClearPad',()=>{seq[bank][ctxPad].fill(false);refreshPadHasSteps();buildSeq();showToast('cleared all bars');closeCtx();});
+  tb('ctxRemoveSample',()=>{if(samples[bank][ctxPad]){delete samples[bank][ctxPad];refreshPads();waveDraw('waveCanvas');}closeCtx();});
+  tb('ctxCancel',closeCtx);
+  document.getElementById('ctxOverlay').addEventListener('touchstart',e=>{if(e.target===document.getElementById('ctxOverlay'))closeCtx();},{passive:true});
+
+  // ── PAD SETTINGS
+  function openPS(i){
+    psPad=i;const p=ps[bank][i];
+    document.getElementById('psPadName').textContent=padNames[i];
+    document.getElementById('psPadNum').textContent=i+1;
+    document.getElementById('psBankName').textContent=bank;
+    ['vol','pitch','pan','decay'].forEach(k=>{
+      const kn=document.getElementById('psKnob'+k[0].toUpperCase()+k.slice(1));
+      rotK(kn,p[k]);updatePsVal(k,p[k]);
+    });
+    document.getElementById('psNoteDisplay').textContent=midiName(p.note);
+    document.getElementById('psToggleReverse').classList.toggle('active',p.reverse);
+    document.getElementById('psToggleLoop').classList.toggle('active',p.loop);
+    document.getElementById('psToggleMute').classList.toggle('active',p.mute);
+    document.getElementById('psToggleSolo').classList.toggle('active',p.solo);
+    const buf=samples[bank][i];
+    document.getElementById('psWaveSection').style.display=buf?'':'none';
+    if(buf)waveDrawBuf(buf,'psWaveCanvas');
+    document.getElementById('padSettingsOverlay').classList.add('show');
+  }
+  function closePS(){document.getElementById('padSettingsOverlay').classList.remove('show');refreshPads();psPad=null;}
+  function updatePsVal(k,v){
+    const el=document.getElementById('psVal'+k[0].toUpperCase()+k.slice(1));if(!el)return;
+    if(k==='pitch')el.textContent=(v>50?'+':'')+Math.round(v-50);
+    else if(k==='pan')el.textContent=v===50?'C':(v<50?'L'+(50-Math.round(v)):'R'+(Math.round(v)-50));
+    else el.textContent=Math.round(v);
+  }
+  function setupPsKnobs(){
+    document.querySelectorAll('.ps-knob').forEach(kn=>{
+      const key=kn.dataset.ps;let sy=0,sv=0;
+      function apply(cy){if(psPad===null)return;const v=Math.max(0,Math.min(100,sv+(sy-cy)*.75));ps[bank][psPad][key]=v;rotK(kn,v);updatePsVal(key,v);}
+      kn.addEventListener('touchstart',e=>{e.preventDefault();if(psPad===null)return;sy=e.touches[0].clientY;sv=ps[bank][psPad][key];const mv=ev=>{ev.preventDefault();apply(ev.touches[0].clientY);};const up=()=>{document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up);};document.addEventListener('touchmove',mv,{passive:false});document.addEventListener('touchend',up);},{passive:false});
+      kn.addEventListener('pointerdown',e=>{e.preventDefault();if(psPad===null)return;kn.setPointerCapture(e.pointerId);sy=e.clientY;sv=ps[bank][psPad][key];const mv=ev=>apply(ev.clientY);const up=()=>{kn.removeEventListener('pointermove',mv);kn.removeEventListener('pointerup',up);};kn.addEventListener('pointermove',mv);kn.addEventListener('pointerup',up);});
+    });
+  }
+  tb('psNoteDown',()=>{if(psPad===null)return;ps[bank][psPad].note=Math.max(0,ps[bank][psPad].note-1);document.getElementById('psNoteDisplay').textContent=midiName(ps[bank][psPad].note);});
+  tb('psNoteUp',()=>{if(psPad===null)return;ps[bank][psPad].note=Math.min(127,ps[bank][psPad].note+1);document.getElementById('psNoteDisplay').textContent=midiName(ps[bank][psPad].note);});
+  [['psToggleReverse','reverse'],['psToggleLoop','loop'],['psToggleMute','mute'],['psToggleSolo','solo']].forEach(([id,k])=>{
+    tb(id,()=>{if(psPad===null)return;ps[bank][psPad][k]=!ps[bank][psPad][k];document.getElementById(id).classList.toggle('active',ps[bank][psPad][k]);if(k==='mute')refreshPads();});
   });
-}
+  tb('psCloseBtn',closePS);tb('psClose2',closePS);
+  tb('psReset',()=>{if(psPad===null)return;ps[bank][psPad]=defPS();openPS(psPad);showToast('settings reset');});
+  document.getElementById('padSettingsOverlay').addEventListener('touchstart',e=>{if(e.target===document.getElementById('padSettingsOverlay'))closePS();},{passive:true});
 
-function rotateKnob(k, v) { k.style.transform = `rotate(${-135 + v/100*270}deg)`; }
+  // ── RENAME
+  function openRename(i){renamePad=i;document.getElementById('renamePadNum').textContent=i+1;document.getElementById('renameInput').value=padNames[i];document.getElementById('renameOverlay').classList.add('show');setTimeout(()=>document.getElementById('renameInput').focus(),200);}
+  function confirmRename(){if(renamePad===null)return;const v=document.getElementById('renameInput').value.trim().toUpperCase().slice(0,8);if(v){padNames[renamePad]=v;refreshPads();showToast('renamed → '+v);}document.getElementById('renameOverlay').classList.remove('show');renamePad=null;}
+  tb('renameOk',confirmRename);tb('renameCancel',()=>document.getElementById('renameOverlay').classList.remove('show'));
+  document.getElementById('renameInput').addEventListener('keydown',e=>{if(e.key==='Enter')confirmRename();});
 
-function updateKnobDisplay(id, label, val) {
-  const el = document.getElementById('val' + id.replace('knob',''));
-  if (!el) return;
-  el.textContent = label === 'pitch' ? (val>50?'+':'') + Math.round(val-50) : Math.round(val);
-}
-
-// ═══════════════════════════════════════════
-// VU METER
-// ═══════════════════════════════════════════
-function buildVU() {
-  const m = document.getElementById('vuMeter');
-  for (let i = 0; i < 12; i++) {
-    const b = document.createElement('div');
-    b.className = 'vol-bar'; b.style.height = '3px'; m.appendChild(b);
-  }
-}
-
-let vuTo = null;
-function triggerVU(level) {
-  const bars = document.querySelectorAll('.vol-bar');
-  const n = Math.round(level * 10);
-  bars.forEach((b, i) => {
-    b.style.height = (i < n ? 4 + (i/(bars.length-1))*14 : 3) + 'px';
-    b.className = 'vol-bar' + (i<n ? (i>9?' clip':i>7?' peak':' active') : '');
+  // ── FILE
+  document.getElementById('fileInput').addEventListener('change',async e=>{
+    const file=e.target.files[0];if(!file)return;ensureCtx();
+    const target=ctxPad!==null?ctxPad:activeTrack;
+    try{const buf=await ctx.decodeAudioData(await file.arrayBuffer());samples[bank][target]=buf;waveDrawBuf(buf,'waveCanvas');if(psPad===target)waveDrawBuf(buf,'psWaveCanvas');refreshPads();document.getElementById('dispMain').textContent=padNames[target];document.getElementById('dispSub').textContent=file.name.slice(0,14);showToast('loaded → '+padNames[target]);}
+    catch{showToast('error: bad file');}
+    e.target.value='';ctxPad=null;
   });
-  clearTimeout(vuTo);
-  vuTo = setTimeout(() => bars.forEach(b => { b.style.height='3px'; b.className='vol-bar'; }), 230);
-}
+  document.getElementById('loadHint').addEventListener('click',()=>document.getElementById('fileInput').click());
 
-// ═══════════════════════════════════════════
-// WAVEFORM
-// ═══════════════════════════════════════════
-function drawWaveformFromBuffer(buf) {
-  const cv = document.getElementById('waveCanvas');
-  const c = cv.getContext('2d');
-  const data = buf.getChannelData(0);
-  const W = cv.width, H = cv.height;
-  const step = Math.max(1, Math.floor(data.length/W));
-  c.clearRect(0,0,W,H);
-  c.strokeStyle='#4ecb71'; c.lineWidth=1;
-  c.shadowColor='#4ecb71'; c.shadowBlur=4;
-  c.beginPath();
-  for (let x=0;x<W;x++){
-    const y = H/2 + (data[x*step]||0)*(H/2-2);
-    x ? c.lineTo(x,y) : c.moveTo(x,y);
+  // ── GLOBAL KNOBS
+  function setupKnobs(){
+    document.querySelectorAll('.knob').forEach(kn=>{
+      const label=kn.dataset.label;let sy=0,sv=0;
+      function apply(cy){const v=Math.max(0,Math.min(100,sv+(sy-cy)*.75));knob[label]=v;rotK(kn,v);updateKnobDisp(kn.id,label,v);if(label==='reverb')reverbImpulse=null;}
+      kn.addEventListener('touchstart',e=>{e.preventDefault();sy=e.touches[0].clientY;sv=knob[label];const mv=ev=>{ev.preventDefault();apply(ev.touches[0].clientY);};const up=()=>{document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up);};document.addEventListener('touchmove',mv,{passive:false});document.addEventListener('touchend',up);},{passive:false});
+      kn.addEventListener('pointerdown',e=>{e.preventDefault();kn.setPointerCapture(e.pointerId);sy=e.clientY;sv=knob[label];const mv=ev=>apply(ev.clientY);const up=()=>{kn.removeEventListener('pointermove',mv);kn.removeEventListener('pointerup',up);};kn.addEventListener('pointermove',mv);kn.addEventListener('pointerup',up);});
+      rotK(kn,knob[label]);updateKnobDisp(kn.id,label,knob[label]);
+    });
   }
-  c.stroke();
-}
+  function rotK(k,v){if(k)k.style.transform=`rotate(${-135+v/100*270}deg)`;}
+  function updateKnobDisp(id,label,v){const el=document.getElementById('val'+id.replace('knob',''));if(!el)return;el.textContent=label==='pitch'?(v>50?'+':'')+Math.round(v-50):Math.round(v);}
 
-function drawIdleWaveform() {
-  const cv = document.getElementById('waveCanvas');
-  const c = cv.getContext('2d');
-  c.clearRect(0,0,cv.width,cv.height);
-  c.strokeStyle='#1a3018'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(0,cv.height/2); c.lineTo(cv.width,cv.height/2); c.stroke();
-}
-
-// ═══════════════════════════════════════════
-// SEQUENCER
-// ═══════════════════════════════════════════
-function buildSeqGrid() {
-  const grid = document.getElementById('seqGrid');
-  grid.innerHTML = '';
-  const track = seqData[currentBank][activeSeqTrack];
-  for (let row = 0; row < 2; row++) {
-    const rowEl = document.createElement('div');
-    rowEl.className = 'seq-row';
-    for (let col = 0; col < 8; col++) {
-      const step = row*8+col;
-      const s = document.createElement('div');
-      s.className = 'seq-step' + (track[step]?' on':'') + (step===seqStep?' current':'');
-      const toggle = e => { e.preventDefault(); seqData[currentBank][activeSeqTrack][step] ^= true; buildSeqGrid(); refreshPadHasSteps(); };
-      s.addEventListener('touchstart', toggle, { passive:false });
-      s.addEventListener('mousedown', toggle);
-      rowEl.appendChild(s);
-    }
-    grid.appendChild(rowEl);
+  // ── VU
+  function buildVU(id){const m=document.getElementById(id);if(!m)return;m.innerHTML='';for(let i=0;i<12;i++){const b=document.createElement('div');b.className='vol-bar';b.style.height='3px';m.appendChild(b);}}
+  let vuTo=null;
+  function vuTrig(level){
+    ['vuMeter','vuDesktop'].forEach(id=>{
+      const bars=document.getElementById(id)?.querySelectorAll('.vol-bar');if(!bars)return;
+      const n=Math.round(level*10);
+      bars.forEach((b,i)=>{b.style.height=(i<n?4+(i/(bars.length-1))*14:3)+'px';b.className='vol-bar'+(i<n?(i>9?' clip':i>7?' peak':' active'):'');});
+    });
+    clearTimeout(vuTo);vuTo=setTimeout(()=>['vuMeter','vuDesktop'].forEach(id=>document.getElementById(id)?.querySelectorAll('.vol-bar').forEach(b=>{b.style.height='3px';b.className='vol-bar';})),230);
   }
-}
 
-function clearSeq() {
-  seqData[currentBank][activeSeqTrack].fill(false);
-  buildSeqGrid(); refreshPadHasSteps();
-}
-
-function randomSeq() {
-  seqData[currentBank][activeSeqTrack] = seqData[currentBank][activeSeqTrack].map(() => Math.random() > 0.62);
-  buildSeqGrid(); refreshPadHasSteps();
-}
-
-function tickSeq() {
-  seqStep = (seqStep + 1) % 16;
-  // Запускаем ВСЕ пэды у которых этот шаг активен — полноценная многодорожечная запись
-  for (let p = 0; p < NUM_PADS; p++) {
-    if (seqData[currentBank][p][seqStep]) hitPad(p);
+  // ── WAVEFORM
+  function waveDrawBuf(buf,canvasId){
+    const cv=document.getElementById(canvasId);if(!cv)return;
+    const c=cv.getContext('2d');const data=buf.getChannelData(0);
+    const W=cv.width,H=cv.height;const step=Math.max(1,Math.floor(data.length/W));
+    c.clearRect(0,0,W,H);c.strokeStyle='#4ecb71';c.lineWidth=1;c.shadowColor='#4ecb71';c.shadowBlur=4;
+    c.beginPath();for(let x=0;x<W;x++){const y=H/2+(data[x*step]||0)*(H/2-2);x?c.lineTo(x,y):c.moveTo(x,y);}c.stroke();
   }
-  buildSeqGrid();
-  const led = document.getElementById('ledPlay');
-  led.className = 'led orange';
-  setTimeout(() => { led.className = isPlaying ? 'led green' : 'led'; }, 70);
-}
+  function waveDraw(id){const cv=document.getElementById(id);if(!cv)return;const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);c.strokeStyle='#1a3018';c.lineWidth=1;c.beginPath();c.moveTo(0,cv.height/2);c.lineTo(cv.width,cv.height/2);c.stroke();}
 
-function updateSeqModeDot() {
-  const dot = document.getElementById('seqModeDot');
-  if (isRecording && isPlaying) { dot.className = 'seq-mode-dot rec'; }
-  else if (isPlaying) { dot.className = 'seq-mode-dot play'; }
-  else if (isRecording) { dot.className = 'seq-mode-dot rec'; }
-  else { dot.className = 'seq-mode-dot'; }
-}
-
-// ═══════════════════════════════════════════
-// TRANSPORT
-// ═══════════════════════════════════════════
-function togglePlay() {
-  ensureCtx();
-  isPlaying = !isPlaying;
-  const btn = document.getElementById('btnPlay');
-  if (isPlaying) {
-    btn.classList.add('playing'); btn.textContent = '■';
-    document.getElementById('ledPlay').className = 'led green';
-    seqStep = -1;
-    seqInterval = setInterval(tickSeq, 60000/bpm/4);
-    showToast('playing');
-  } else {
-    btn.classList.remove('playing'); btn.textContent = '▶';
-    document.getElementById('ledPlay').className = 'led';
-    clearInterval(seqInterval);
-    seqStep = -1; buildSeqGrid();
-    showToast('stopped');
+  // ── TRANSPORT
+  function togglePlay(){
+    ensureCtx();playing=!playing;const btn=document.getElementById('btnPlay');
+    if(playing){btn.classList.add('playing');btn.textContent='■';document.getElementById('ledPlay').className='led green';seqStep=-1;activeBar=0;seqIv=setInterval(tick,60000/bpm/4);showToast('playing');}
+    else{btn.classList.remove('playing');btn.textContent='▶';document.getElementById('ledPlay').className='led';clearInterval(seqIv);seqStep=-1;buildSeq();showToast('stopped');}
+    buildSeq();
   }
-  updateSeqModeDot();
-}
+  function toggleRecord(){recording=!recording;document.getElementById('btnRec').classList.toggle('recording',recording);document.getElementById('ledRec').className=recording?'led red blink':'led';showToast(recording?'rec on':'rec off');buildSeq();}
+  function changeBpm(d){bpm=Math.max(40,Math.min(220,bpm+d));document.getElementById('bpmNum').textContent=bpm;if(playing){clearInterval(seqIv);seqIv=setInterval(tick,60000/bpm/4);}}
+  function holdBtn(id,fn){
+    const el=document.getElementById(id);let iv=null;
+    const start=e=>{e.preventDefault();fn();iv=setInterval(fn,110);};const stop=()=>clearInterval(iv);
+    el.addEventListener('touchstart',start,{passive:false});el.addEventListener('touchend',stop);el.addEventListener('touchcancel',stop);
+    el.addEventListener('mousedown',start);el.addEventListener('mouseup',stop);el.addEventListener('mouseleave',stop);
+  }
+  function setBank(b){bank=b;['A','B','C'].forEach(x=>document.getElementById('btn'+x).classList.toggle('active',x===b));refreshPads();buildSeq();showToast('bank '+b);}
+  function toggleMode(m){mode[m]=!mode[m];document.getElementById({chop:'btnChop',loop:'btnLoop',rev:'btnRev'}[m]).classList.toggle('active',mode[m]);showToast(m+(mode[m]?' on':' off'));}
+  function nudgePitch(d){knob.pitch=Math.max(0,Math.min(100,knob.pitch+d*3));rotK(document.getElementById('knobPitch'),knob.pitch);updateKnobDisp('knobPitch','pitch',knob.pitch);}
 
-function toggleRecord() {
-  isRecording = !isRecording;
-  document.getElementById('btnRec').classList.toggle('recording', isRecording);
-  document.getElementById('ledRec').className = isRecording ? 'led red blink' : 'led';
-  showToast(isRecording ? 'rec on — hit pads' : 'rec off');
-  updateSeqModeDot();
-}
+  // ── TOAST
+  let toastTo;
+  function showToast(msg){const t=document.getElementById('toast');t.textContent=msg.toUpperCase();t.classList.add('show');clearTimeout(toastTo);toastTo=setTimeout(()=>t.classList.remove('show'),1400);}
 
-function changeBpm(d) {
-  bpm = Math.max(40, Math.min(220, bpm+d));
-  document.getElementById('bpmNum').textContent = bpm;
-  if (isPlaying) { clearInterval(seqInterval); seqInterval = setInterval(tickSeq, 60000/bpm/4); }
-}
+  // ── KEYBOARD
+  const KB={q:0,w:1,e:2,r:3,a:4,s:5,d:6,f:7,z:8,x:9,c:10,v:11,'1':12,'2':13,'3':14,'4':15};
+  window.addEventListener('keydown',e=>{
+    if(e.repeat)return;
+    if(document.getElementById('renameOverlay').classList.contains('show'))return;
+    if(document.getElementById('padSettingsOverlay').classList.contains('show'))return;
+    const i=KB[e.key.toLowerCase()];if(i!==undefined)hitPad(i);
+    if(e.code==='Space'){e.preventDefault();togglePlay();}
+    if(e.key==='ArrowUp')changeBpm(1);if(e.key==='ArrowDown')changeBpm(-1);
+    if(e.key==='['){activeBar=Math.max(0,activeBar-1);buildSeq();}
+    if(e.key===']'){activeBar=Math.min(BARS-1,activeBar+1);buildSeq();}
+  });
 
-function setupHoldBtn(id, action) {
-  const el = document.getElementById(id);
-  let iv = null;
-  const start = e => { e.preventDefault(); action(); iv = setInterval(action, 110); };
-  const stop = () => clearInterval(iv);
-  el.addEventListener('touchstart', start, { passive:false });
-  el.addEventListener('touchend', stop);
-  el.addEventListener('touchcancel', stop);
-  el.addEventListener('mousedown', start);
-  el.addEventListener('mouseup', stop);
-  el.addEventListener('mouseleave', stop);
-}
-
-// ═══════════════════════════════════════════
-// BANK / MODE
-// ═══════════════════════════════════════════
-function setBank(b) {
-  currentBank = b;
-  ['A','B','C'].forEach(x => document.getElementById('btn'+x).classList.toggle('active', x===b));
-  refreshPadStates(); buildSeqGrid();
-  showToast('bank ' + b);
-}
-
-function toggleMode(m) {
-  mode[m] = !mode[m];
-  document.getElementById({chop:'btnChop',loop:'btnLoop',rev:'btnRev'}[m]).classList.toggle('active', mode[m]);
-  showToast(m + (mode[m]?' on':' off'));
-}
-
-function setupTouchBtn(id, fn) {
-  const el = document.getElementById(id);
-  el.addEventListener('touchstart', e => { e.preventDefault(); fn(); }, { passive:false });
-  el.addEventListener('click', fn);
-}
-
-// ═══════════════════════════════════════════
-// PITCH
-// ═══════════════════════════════════════════
-function nudgePitch(dir) {
-  knobState.pitch = Math.max(0, Math.min(100, knobState.pitch + dir*3));
-  rotateKnob(document.getElementById('knobPitch'), knobState.pitch);
-  updateKnobDisplay('knobPitch', 'pitch', knobState.pitch);
-}
-
-// ═══════════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════════
-let toastTo;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg.toUpperCase();
-  t.classList.add('show');
-  clearTimeout(toastTo);
-  toastTo = setTimeout(() => t.classList.remove('show'), 1400);
-}
-
-// ═══════════════════════════════════════════
-// KEYBOARD (desktop)
-// ═══════════════════════════════════════════
-const KB = {q:0,w:1,e:2,r:3,a:4,s:5,d:6,f:7,z:8,x:9,c:10,v:11,'1':12,'2':13,'3':14,'4':15};
-window.addEventListener('keydown', e => {
-  if (e.repeat) return;
-  if (document.getElementById('renameOverlay').classList.contains('show')) return;
-  const i = KB[e.key.toLowerCase()];
-  if (i !== undefined) hitPad(i);
-  if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-  if (e.key === 'ArrowUp') changeBpm(1);
-  if (e.key === 'ArrowDown') changeBpm(-1);
-  if (e.key === 'r' && e.ctrlKey) { e.preventDefault(); toggleRecord(); }
-});
-
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-buildPads();
-setupKnobs();
-setupHoldBtn('btnBpmDown', () => changeBpm(-1));
-setupHoldBtn('btnBpmUp',   () => changeBpm(+1));
-buildVU();
-buildSeqGrid();
-drawIdleWaveform();
-
-setupTouchBtn('btnPlay', togglePlay);
-setupTouchBtn('btnRec',  toggleRecord);
-['A','B','C'].forEach(b => setupTouchBtn('btn'+b, () => setBank(b)));
-[['btnChop','chop'],['btnLoop','loop'],['btnRev','rev']].forEach(([id,m]) => setupTouchBtn(id, () => toggleMode(m)));
-setupTouchBtn('btnClr', clearSeq);
-setupTouchBtn('btnRnd', randomSeq);
-
-document.getElementById('pitchDown').addEventListener('touchstart', e => { e.preventDefault(); nudgePitch(-1); }, { passive:false });
-document.getElementById('pitchDown').addEventListener('click', () => nudgePitch(-1));
-document.getElementById('pitchUp').addEventListener('touchstart', e => { e.preventDefault(); nudgePitch(1); }, { passive:false });
-document.getElementById('pitchUp').addEventListener('click', () => nudgePitch(1));
-
-showToast('K.O. READY');
+  // ── INIT
+  buildPads();setupKnobs();setupPsKnobs();
+  holdBtn('btnBpmDown',()=>changeBpm(-1));holdBtn('btnBpmUp',()=>changeBpm(1));
+  buildVU('vuMeter');buildVU('vuDesktop');
+  buildSeq();waveDraw('waveCanvas');waveDraw('psWaveCanvas');
+  tb('btnPlay',togglePlay);tb('btnRec',toggleRecord);
+  ['A','B','C'].forEach(b=>tb('btn'+b,()=>setBank(b)));
+  [['btnChop','chop'],['btnLoop','loop'],['btnRev','rev']].forEach(([id,m])=>tb(id,()=>toggleMode(m)));
+  document.getElementById('pitchDown').addEventListener('touchstart',e=>{e.preventDefault();nudgePitch(-1);},{passive:false});
+  document.getElementById('pitchDown').addEventListener('click',()=>nudgePitch(-1));
+  document.getElementById('pitchUp').addEventListener('touchstart',e=>{e.preventDefault();nudgePitch(1);},{passive:false});
+  document.getElementById('pitchUp').addEventListener('click',()=>nudgePitch(1));
+  showToast('K.O. READY');
 </script>
 </body>
 </html>
