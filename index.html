@@ -26,16 +26,22 @@
       <div class="led" id="ledPlay"></div>
     </div>
   </div>
-  <div class="display-row">
-    <div class="display">
-      <div class="display-label">sample</div>
-      <div class="display-main" id="dispMain">--</div>
-      <div class="display-sub" id="dispSub">ready</div>
+  <div class="info-bar">
+    <div class="info-sample">
+      <span class="info-name" id="dispMain">--</span>
+      <span class="info-status" id="dispSub">ready</span>
     </div>
-    <div class="waveform-display">
-      <div class="display-label">wave</div>
-      <canvas id="waveCanvas" width="180" height="40"></canvas>
+    <div class="info-transport">
+      <div class="bpm-display"><div class="bpm-num" id="bpmNum">120</div><div class="bpm-label">bpm</div></div>
+      <div class="transport-btn" id="btnBpmDown">–</div>
+      <div class="transport-btn" id="btnBpmUp">+</div>
+      <div class="transport-btn rec" id="btnRec">●</div>
+      <div class="transport-btn play" id="btnPlay">▶</div>
+      <div class="transport-btn export" id="btnExport" title="Export audio">⬇</div>
     </div>
+  </div>
+  <div class="wave-strip">
+    <canvas id="waveCanvas" width="800" height="20"></canvas>
   </div>
   <div class="controls-row">
     <div class="knob-group">
@@ -58,21 +64,9 @@
       </div>
     </div>
   </div>
-  <div class="transport-row">
-    <div class="bpm-display"><div class="bpm-num" id="bpmNum">120</div><div class="bpm-label">bpm</div></div>
-    <div class="transport-btn" id="btnBpmDown">–</div>
-    <div class="transport-btn" id="btnBpmUp">+</div>
-    <div class="transport-btn rec" id="btnRec">●</div>
-    <div class="transport-btn play" id="btnPlay">▶</div>
-    <div class="transport-btn export" id="btnExport" title="Export audio">⬇</div>
-  </div>
   <div class="divider-el"></div>
   <div class="pad-section">
     <div class="pad-grid" id="padGrid"></div>
-    <div class="side-panel">
-      <div class="side-section"><span class="side-label">level</span><div class="vol-bars" id="vuMeter"></div></div>
-      <div class="side-section seq-mobile-wrap" style="flex:1;overflow:hidden"><div id="seqMobile"></div></div>
-    </div>
   </div>
   <div class="seq-desktop-panel" id="seqDesktopPanel">
     <div class="vu-desktop-row vol-bars" id="vuDesktop"></div>

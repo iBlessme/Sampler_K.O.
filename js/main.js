@@ -41,7 +41,6 @@ async function init() {
   holdBtn('btnBpmDown', () => changeBpm(-1));
   holdBtn('btnBpmUp',   () => changeBpm(1));
 
-  buildVU('vuMeter');
   buildVU('vuDesktop');
   buildSeq();
   waveDraw('waveCanvas');

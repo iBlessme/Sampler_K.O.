@@ -168,7 +168,7 @@ export function buildVU(id) {
 }
 
 export function vuTrig(level) {
-  ['vuMeter', 'vuDesktop'].forEach(id => {
+  ['vuDesktop'].forEach(id => {
     const bars = document.getElementById(id)?.querySelectorAll('.vol-bar');
     if (!bars) return;
     const n = Math.round(level * 10);
@@ -178,7 +178,7 @@ export function vuTrig(level) {
     });
   });
   clearTimeout(vuTo);
-  vuTo = setTimeout(() => ['vuMeter', 'vuDesktop'].forEach(id =>
+  vuTo = setTimeout(() => ['vuDesktop'].forEach(id =>
     document.getElementById(id)?.querySelectorAll('.vol-bar').forEach(b => {
       b.style.height = '3px';
       b.className = 'vol-bar';
