@@ -130,7 +130,8 @@ export function makeSynth(i) {
   const g   = audioCtx.createGain();
   const pan = audioCtx.createStereoPanner();
   pan.pan.value = (p.pan - 50) / 50;
-  osc.type = ['sawtooth', 'square', 'triangle', 'sine'][Math.floor(i / 4) % 4];
+  const synthType = ['sawtooth', 'square', 'triangle', 'sine'][Math.floor(i / 4) % 4];
+  osc.type = synthType;
   osc.frequency.value = [55, 110, 220, 880, 330, 660, 80, 440, 523, 659, 262, 392, 528, 200, 180, 100][i] * pp;
   osc.connect(g); g.connect(pan); pan.connect(getMaster());
   if (knob.reverb > 5) sendRev(pan, knob.reverb / 100);
@@ -150,6 +151,7 @@ export function makeSynth(i) {
     osc.start(); osc.stop(audioCtx.currentTime + decT + 0.02);
   }
   vuTrig(vol);
+  waveDrawSynth(synthType, 'waveCanvas');
 }
 
 // ── VU METER
@@ -196,10 +198,33 @@ export function waveDrawBuf(buf, canvasId) {
   const step = Math.max(1, Math.floor(data.length / W));
   c.clearRect(0, 0, W, H);
   c.strokeStyle = '#4ecb71'; c.lineWidth = 1;
-  c.shadowColor = '#4ecb71'; c.shadowBlur = 4;
   c.beginPath();
   for (let x = 0; x < W; x++) {
     const y = H / 2 + (data[x * step] || 0) * (H / 2 - 2);
+    x ? c.lineTo(x, y) : c.moveTo(x, y);
+  }
+  c.stroke();
+}
+
+export function waveDrawSynth(type, canvasId) {
+  const cv = document.getElementById(canvasId);
+  if (!cv) return;
+  const c = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  c.clearRect(0, 0, W, H);
+  c.strokeStyle = '#4ecb71'; c.lineWidth = 1;
+  c.beginPath();
+  const cycles = 5;
+  for (let x = 0; x < W; x++) {
+    const phase = ((x / W) * cycles) % 1;
+    let v;
+    switch (type) {
+      case 'sawtooth': v = phase * 2 - 1; break;
+      case 'square':   v = phase < 0.5 ? 0.8 : -0.8; break;
+      case 'triangle': v = phase < 0.5 ? phase * 4 - 1 : 3 - phase * 4; break;
+      default:         v = Math.sin(phase * Math.PI * 2); break;
+    }
+    const y = H / 2 + v * (H / 2 - 2);
     x ? c.lineTo(x, y) : c.moveTo(x, y);
   }
   c.stroke();

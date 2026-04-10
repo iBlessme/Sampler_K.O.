@@ -360,12 +360,12 @@ export function nudgePitch(d) {
 
 // ── KEYBOARD
 export function initKeyboard() {
-  const KB = { q:0, w:1, e:2, r:3, a:4, s:5, d:6, f:7, z:8, x:9, c:10, v:11, '1':12, '2':13, '3':14, '4':15 };
+  const KB = { KeyQ:0, KeyW:1, KeyE:2, KeyR:3, KeyA:4, KeyS:5, KeyD:6, KeyF:7, KeyZ:8, KeyX:9, KeyC:10, KeyV:11, Digit1:12, Digit2:13, Digit3:14, Digit4:15 };
   window.addEventListener('keydown', e => {
     if (e.repeat) return;
     if (document.getElementById('renameOverlay').classList.contains('show')) return;
     if (document.getElementById('padSettingsOverlay').classList.contains('show')) return;
-    const i = KB[e.key.toLowerCase()];
+    const i = KB[e.code];
     if (i !== undefined) hitPad(i);
     if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
     if (e.key === 'ArrowUp')   changeBpm(1);
