@@ -14,6 +14,17 @@ import {
 } from './ui.js';
 import { showToast } from './toast.js';
 
+// Global .btn press state — replaces CSS :active to prevent mobile propagation
+function initBtnPressState() {
+  const clearAll = () => document.querySelectorAll('.btn.pressing').forEach(b => b.classList.remove('pressing'));
+  document.addEventListener('pointerdown', e => {
+    const btn = e.target.closest('.btn');
+    if (btn) btn.classList.add('pressing');
+  }, { passive: true });
+  document.addEventListener('pointerup',     clearAll, { passive: true });
+  document.addEventListener('pointercancel', clearAll, { passive: true });
+}
+
 async function init() {
   document.getElementById('brandVersion').textContent = 'v' + VERSION;
   buildPads();
@@ -58,6 +69,7 @@ async function init() {
   document.getElementById('pitchUp').addEventListener('touchstart', e => { e.preventDefault(); nudgePitch(1); }, { passive: false });
   document.getElementById('pitchUp').addEventListener('click', () => nudgePitch(1));
 
+  initBtnPressState();
   showToast('K.O. READY');
 }
 

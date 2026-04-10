@@ -8,6 +8,8 @@ import { showToast } from './toast.js';
 const AUDIO_EXT = /\.(wav|mp3|ogg|flac|aac|m4a|aif|aiff|webm)$/i;
 const MAX_VISIBLE = 200;
 
+let pendingHandle = null; // FSAPI handle awaiting permission re-request
+
 // ─────────────────────────────────────────────────────────────────────────────
 // BUILT-IN: загружаем samples/manifest.json и строим паки через fetch()
 // ─────────────────────────────────────────────────────────────────────────────
@@ -157,8 +159,28 @@ async function tryRestoreHandle() {
     lib.localRootName = handle.name;
     lib.localPacks = await scanDirHandle(handle);
     document.getElementById('btnLib').classList.add('has-lib');
+  } else if (perm === 'prompt') {
+    // Сохраняем handle — покажем кнопку reconnect при открытии библиотеки
+    pendingHandle = handle;
   }
-  // 'prompt' — запросим при открытии библиотеки
+}
+
+async function reconnectHandle() {
+  if (!pendingHandle) return;
+  try {
+    const perm = await pendingHandle.requestPermission({ mode: 'read' });
+    if (perm === 'granted') {
+      lib.localRootName = pendingHandle.name;
+      lib.localPacks = await scanDirHandle(pendingHandle);
+      pendingHandle = null;
+      document.getElementById('btnLib').classList.add('has-lib');
+      switchTab('local');
+    } else {
+      showToast('permission denied');
+    }
+  } catch {
+    showToast('could not reconnect');
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -175,6 +197,9 @@ function switchTab(tab) {
   document.getElementById('libOpenFolder').style.display = tab === 'local' ? '' : 'none';
   document.getElementById('libLoadKit').style.display = 'none';
   document.getElementById('libRefresh').style.display = tab === 'local' && lib.localPacks.length > 0 ? '' : 'none';
+
+  const showReconnect = tab === 'local' && pendingHandle !== null && lib.localPacks.length === 0;
+  document.getElementById('libReconnect').style.display = showReconnect ? '' : 'none';
 
   setBreadcrumb(null);
   renderPackList(tab === 'builtin' ? lib.builtinPacks : lib.localPacks,
@@ -339,6 +364,7 @@ async function loadKit() {
   }
   refreshPads();
   hidePicker();
+  closeLibrary();
   showToast(`kit loaded · ${loaded} pads`);
 }
 
@@ -378,6 +404,10 @@ export async function initLibrary() {
   document.getElementById('libTabBuiltin').addEventListener('touchstart', e => { e.preventDefault(); switchTab('builtin'); }, { passive: false });
   document.getElementById('libTabLocal').addEventListener('click', () => switchTab('local'));
   document.getElementById('libTabLocal').addEventListener('touchstart', e => { e.preventDefault(); switchTab('local'); }, { passive: false });
+
+  // Reconnect
+  document.getElementById('libReconnectBtn').addEventListener('click', reconnectHandle);
+  document.getElementById('libReconnectBtn').addEventListener('touchstart', e => { e.preventDefault(); reconnectHandle(); }, { passive: false });
 
   // Открытие папки
   document.getElementById('libOpenFolder').addEventListener('click', pickFolder);
