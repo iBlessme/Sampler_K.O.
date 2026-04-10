@@ -9,7 +9,7 @@ import {
   setupKnobs, setupPsKnobs,
   initContextMenu, initPadSettings, initRename, initFileInput, initExport,
   togglePlay, toggleRecord, changeBpm,
-  holdBtn, setBank, toggleMode, nudgePitch,
+  holdBtn, setBank, toggleMode,
   initKeyboard,
 } from './ui.js';
 import { showToast } from './toast.js';
@@ -62,11 +62,6 @@ async function init() {
     el.addEventListener('click', () => toggleMode(m));
     el.addEventListener('touchstart', e => { e.preventDefault(); toggleMode(m); }, { passive: false });
   });
-
-  document.getElementById('pitchDown').addEventListener('touchstart', e => { e.preventDefault(); nudgePitch(-1); }, { passive: false });
-  document.getElementById('pitchDown').addEventListener('click', () => nudgePitch(-1));
-  document.getElementById('pitchUp').addEventListener('touchstart', e => { e.preventDefault(); nudgePitch(1); }, { passive: false });
-  document.getElementById('pitchUp').addEventListener('click', () => nudgePitch(1));
 
   initBtnPressState();
   showToast('K.O. READY');

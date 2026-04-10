@@ -1,6 +1,6 @@
 'use strict';
 
-export const VERSION = '1.0.6';
+export const VERSION = '1.0.7';
 
 export const DEFAULT_NAMES = ['KICK','SNARE','HIHAT','CLAP','PERC1','PERC2','BASS','LEAD','FX1','FX2','CHORD','ARP','VOX','NOISE','STAB','LOOP'];
 export const PAD_COLORS    = ['#e03535','#e03535','#f4611a','#f4611a','#4ecb71','#4ecb71','#4a9ff4','#4a9ff4','#c47af4','#c47af4','#f4e14a','#f4e14a','#f4611a','#4ecb71','#4a9ff4','#e03535'];

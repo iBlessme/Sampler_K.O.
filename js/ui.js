@@ -130,7 +130,7 @@ export function initContextMenu() {
   setOpenCtx(openCtx);
 
   tb('ctxSettings', () => { const i = state.ctxPad; closeCtx(); setTimeout(() => openPS(i), 100); });
-  tb('ctxLoad',     () => { closeCtx(); setTimeout(() => document.getElementById('fileInput').click(), 100); });
+  tb('ctxLoad',     () => { closeCtx(); document.getElementById('fileInput').click(); });
   tb('ctxRename',   () => { const i = state.ctxPad; closeCtx(); setTimeout(() => openRename(i), 150); });
   tb('ctxCopy',     () => {
     if (state.ctxPad === null) return;
@@ -261,7 +261,13 @@ export function initFileInput() {
     const audioCtx = getAudioCtx();
     const target = state.ctxPad !== null ? state.ctxPad : state.activeTrack;
     try {
-      const buf = await audioCtx.decodeAudioData(await file.arrayBuffer());
+      const arrayBuf = await new Promise((res, rej) => {
+        const fr = new FileReader();
+        fr.onload = e => res(e.target.result);
+        fr.onerror = rej;
+        fr.readAsArrayBuffer(file);
+      });
+      const buf = await audioCtx.decodeAudioData(arrayBuf);
       samples[state.bank][target] = buf;
       // авто-переименование из имени файла
       const autoName = file.name.replace(/\.[^.]+$/, '').toUpperCase().slice(0, 8);
@@ -279,7 +285,9 @@ export function initFileInput() {
     state.ctxPad = null;
   });
 
-  document.getElementById('loadHint').addEventListener('click', () => document.getElementById('fileInput').click());
+  const hint = document.getElementById('loadHint');
+  hint.addEventListener('click', () => document.getElementById('fileInput').click());
+  hint.addEventListener('touchstart', e => { e.preventDefault(); document.getElementById('fileInput').click(); }, { passive: false });
 }
 
 // ── TRANSPORT
