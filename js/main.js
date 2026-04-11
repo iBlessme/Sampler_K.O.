@@ -128,6 +128,19 @@ async function init() {
   });
 
   initBtnPressState();
+
+  const fsBtn = document.getElementById('btnFullscreen');
+  fsBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    fsBtn.classList.toggle('active', !!document.fullscreenElement);
+  });
+
   showToast('K.O. READY');
 }
 
