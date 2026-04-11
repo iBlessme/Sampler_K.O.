@@ -9,7 +9,7 @@ import { saveSample, scheduleSave } from './storage.js';
 const AUDIO_EXT = /\.(wav|mp3|ogg|flac|aac|m4a|aif|aiff|webm)$/i;
 const MAX_VISIBLE = 200;
 
-let pendingHandle = null; // FSAPI handle awaiting permission re-request
+let pendingHandle = null;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // BUILT-IN: загружаем samples/manifest.json и строим паки через fetch()

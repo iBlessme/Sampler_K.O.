@@ -1,7 +1,7 @@
 'use strict';
 
 import { state, samples, ps, seq, padNames, PAD_COLORS, N } from './state.js';
-import { playSample } from './audio.js';
+import { playSample, waveDrawBuf, waveDraw } from './audio.js';
 import { buildSeq } from './sequencer.js';
 
 const LONG = 620;
@@ -65,6 +65,9 @@ export function hitPad(i, el) {
   document.querySelectorAll('.seq-track-name').forEach(x => x.textContent = i + 1);
   document.getElementById('dispMain').textContent = padNames[i];
   document.getElementById('dispSub').textContent = samples[state.bank][i] ? 'sample' : 'synth';
+  const buf = samples[state.bank][i];
+  if (buf) waveDrawBuf(buf, 'waveCanvas');
+  else waveDraw('waveCanvas');
   buildSeq();
 }
 

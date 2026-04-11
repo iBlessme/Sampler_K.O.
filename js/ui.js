@@ -1,6 +1,6 @@
 'use strict';
 
-import { state, knob, ps, padNames, samples, seq, defPS, midiName, N } from './state.js';
+import { state, knob, ps, padNames, samples, seq, defPS, midiName, N, DEFAULT_NAMES } from './state.js';
 import { showToast } from './toast.js';
 import { ensureCtx, getAudioCtx, resetReverb, waveDrawBuf, waveDraw, startExport, stopExport, isExporting, playSample } from './audio.js';
 import { saveSample, deleteSample, scheduleSave } from './storage.js';
@@ -154,8 +154,10 @@ export function initContextMenu() {
   });
   tb('ctxRemoveSample', () => {
     if (samples[state.bank][state.ctxPad]) {
-      deleteSample(state.bank, state.ctxPad);
-      delete samples[state.bank][state.ctxPad];
+      const i = state.ctxPad;
+      deleteSample(state.bank, i);
+      delete samples[state.bank][i];
+      padNames[i] = DEFAULT_NAMES[i];
       refreshPads();
       waveDraw('waveCanvas');
       scheduleSave();

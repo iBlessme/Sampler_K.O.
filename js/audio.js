@@ -151,7 +151,6 @@ export function makeSynth(i) {
     osc.start(); osc.stop(audioCtx.currentTime + decT + 0.02);
   }
   vuTrig(vol);
-  waveDrawSynth(synthType, 'waveCanvas');
 }
 
 // ── VU METER
