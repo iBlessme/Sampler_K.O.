@@ -16,7 +16,6 @@ export function buildPads() {
     pad.innerHTML = `
       <div class="pad-num">${i + 1}</div>
       <div class="pad-indicator" style="background:${PAD_COLORS[i]}"></div>
-      <div class="pad-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" class="ring-progress"/></svg></div>
       <div class="pad-glow"></div>
       <div class="pad-name">${padNames[i]}</div>
     `;
@@ -34,26 +33,14 @@ let openCtxExternal = () => {};
 export function setOpenCtx(fn) { openCtxExternal = fn; }
 
 function setupLongPress(pad, idx, cb) {
-  let t0 = 0, af = null, fired = false;
+  let t = null, fired = false;
 
   function start() {
     fired = false;
-    t0 = Date.now();
-    pad.classList.add('long-pressing');
-    af = requestAnimationFrame(tick);
-  }
-  function tick() {
-    const p = Math.min((Date.now() - t0) / LONG, 1);
-    const c = pad.querySelector('.ring-progress');
-    if (c) c.style.strokeDashoffset = 200 * (1 - p);
-    if (p < 1) { af = requestAnimationFrame(tick); }
-    else if (!fired) { fired = true; cancel(); cb(); }
+    t = setTimeout(() => { fired = true; cb(); }, LONG);
   }
   function cancel() {
-    cancelAnimationFrame(af);
-    pad.classList.remove('long-pressing');
-    const c = pad.querySelector('.ring-progress');
-    if (c) c.style.strokeDashoffset = 200;
+    clearTimeout(t);
   }
 
   pad.addEventListener('touchstart', start, { passive: true });

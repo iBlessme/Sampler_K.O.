@@ -2,7 +2,7 @@
 
 import { state, knob, ps, padNames, samples, seq, defPS, midiName, N } from './state.js';
 import { showToast } from './toast.js';
-import { ensureCtx, getAudioCtx, resetReverb, waveDrawBuf, waveDraw, startExport, stopExport, isExporting } from './audio.js';
+import { ensureCtx, getAudioCtx, resetReverb, waveDrawBuf, waveDraw, startExport, stopExport, isExporting, playSample } from './audio.js';
 import { buildSeq, tick } from './sequencer.js';
 import { hitPad, refreshPads, buildPads, setOpenCtx } from './pads.js';
 
@@ -215,6 +215,7 @@ export function initPadSettings() {
     });
   });
 
+  tb('psPlay', () => { if (state.psPad !== null) playSample(state.psPad); });
   tb('psCloseBtn', closePS);
   tb('psClose2', closePS);
   tb('psReset', () => {
