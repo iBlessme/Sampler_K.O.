@@ -262,75 +262,6 @@ body {
     }
 }
 
-/* DESKTOP TEXT SIZE BOOST */
-@media (min-width: 720px) and (orientation: landscape) and (min-height: 521px),(min-width: 900px) {
-    .info-name {
-        font-size: clamp(20px, 2.4vw, 28px)
-    }
-
-    .info-status {
-        font-size: 10px
-    }
-
-    .bpm-num {
-        font-size: 22px
-    }
-
-    .bpm-label {
-        font-size: 8px
-    }
-
-    .bpm-display {
-        min-width: 52px;
-        padding: 4px 8px
-    }
-
-    .transport-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 12px
-    }
-
-    .knob-label {
-        font-size: 9px
-    }
-
-    .knob-value {
-        font-size: 10px
-    }
-
-    .btn {
-        font-size: 10px;
-        padding: 7px 11px
-    }
-
-    .pad-name {
-        font-size: clamp(8px, 1.1vw, 11px)
-    }
-
-    .seq-label-text {
-        font-size: 9px
-    }
-
-    .bar-tab {
-        font-size: 8px;
-        padding: 4px 8px
-    }
-
-    .seq-step {
-        height: 15px
-    }
-}
-
-/* FULLSCREEN */
-:fullscreen .device, :-webkit-full-screen .device {
-    width: 100vw !important;
-    max-width: none !important;
-    height: 100vh !important;
-    max-height: none !important;
-    border-radius: 0 !important;
-    border: none !important
-}
 
 :fullscreen body, :-webkit-full-screen body {
     align-items: stretch;
@@ -2006,6 +1937,33 @@ canvas#psWaveCanvas {
     50% {
         opacity: .2
     }
+}
+
+/* TABLET + DESKTOP: text size boost */
+@media (min-width: 720px) and (orientation: landscape) and (min-height: 521px), (min-width: 900px) {
+    .info-name { font-size: clamp(22px, 2.6vw, 32px) }
+    .info-status { font-size: 12px }
+    .bpm-num { font-size: 26px }
+    .bpm-label { font-size: 9px }
+    .bpm-display { min-width: 58px; padding: 4px 10px }
+    .transport-btn { width: 36px; height: 36px; font-size: 13px }
+    .knob-label { font-size: 11px }
+    .knob-value { font-size: 12px }
+    .btn { font-size: 12px; padding: 8px 13px }
+    .pad-name { font-size: clamp(10px, 1.3vw, 14px) }
+    .seq-label-text { font-size: 11px }
+    .bar-tab { font-size: 10px; padding: 4px 8px }
+    .seq-step { height: 16px }
+}
+
+/* FULLSCREEN */
+:fullscreen .device, :-webkit-full-screen .device {
+    width: 100vw !important;
+    max-width: none !important;
+    height: 100vh !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    border: none !important
 }
 
 .blink {
