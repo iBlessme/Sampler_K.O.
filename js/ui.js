@@ -3,6 +3,7 @@
 import { state, knob, ps, padNames, samples, seq, defPS, midiName, N } from './state.js';
 import { showToast } from './toast.js';
 import { ensureCtx, getAudioCtx, resetReverb, waveDrawBuf, waveDraw, startExport, stopExport, isExporting, playSample } from './audio.js';
+import { saveSample, deleteSample, scheduleSave } from './storage.js';
 import { buildSeq, tick } from './sequencer.js';
 import { hitPad, refreshPads, buildPads, setOpenCtx } from './pads.js';
 
@@ -41,7 +42,7 @@ export function setupKnobs() {
       e.preventDefault();
       sy = e.touches[0].clientY; sv = knob[label];
       const mv = ev => { ev.preventDefault(); apply(ev.touches[0].clientY); };
-      const up = () => { document.removeEventListener('touchmove', mv); document.removeEventListener('touchend', up); };
+      const up = () => { document.removeEventListener('touchmove', mv); document.removeEventListener('touchend', up); scheduleSave(); };
       document.addEventListener('touchmove', mv, { passive: false });
       document.addEventListener('touchend', up);
     }, { passive: false });
@@ -51,7 +52,7 @@ export function setupKnobs() {
       kn.setPointerCapture(e.pointerId);
       sy = e.clientY; sv = knob[label];
       const mv = ev => apply(ev.clientY);
-      const up = () => { kn.removeEventListener('pointermove', mv); kn.removeEventListener('pointerup', up); };
+      const up = () => { kn.removeEventListener('pointermove', mv); kn.removeEventListener('pointerup', up); scheduleSave(); };
       kn.addEventListener('pointermove', mv);
       kn.addEventListener('pointerup', up);
     });
@@ -88,7 +89,7 @@ export function setupPsKnobs() {
       if (state.psPad === null) return;
       sy = e.touches[0].clientY; sv = ps[state.bank][state.psPad][key];
       const mv = ev => { ev.preventDefault(); apply(ev.touches[0].clientY); };
-      const up = () => { document.removeEventListener('touchmove', mv); document.removeEventListener('touchend', up); };
+      const up = () => { document.removeEventListener('touchmove', mv); document.removeEventListener('touchend', up); scheduleSave(); };
       document.addEventListener('touchmove', mv, { passive: false });
       document.addEventListener('touchend', up);
     }, { passive: false });
@@ -99,7 +100,7 @@ export function setupPsKnobs() {
       kn.setPointerCapture(e.pointerId);
       sy = e.clientY; sv = ps[state.bank][state.psPad][key];
       const mv = ev => apply(ev.clientY);
-      const up = () => { kn.removeEventListener('pointermove', mv); kn.removeEventListener('pointerup', up); };
+      const up = () => { kn.removeEventListener('pointermove', mv); kn.removeEventListener('pointerup', up); scheduleSave(); };
       kn.addEventListener('pointermove', mv);
       kn.addEventListener('pointerup', up);
     });
@@ -130,7 +131,7 @@ export function initContextMenu() {
   setOpenCtx(openCtx);
 
   tb('ctxSettings', () => { const i = state.ctxPad; closeCtx(); setTimeout(() => openPS(i), 100); });
-  tb('ctxLoad',     () => { closeCtx(); document.getElementById('fileInput').click(); });
+  tb('ctxLoad',     () => { const bank = state.bank; const pad = state.ctxPad; closeCtx(); openFileForPad(bank, pad); });
   tb('ctxRename',   () => { const i = state.ctxPad; closeCtx(); setTimeout(() => openRename(i), 150); });
   tb('ctxCopy',     () => {
     if (state.ctxPad === null) return;
@@ -153,9 +154,11 @@ export function initContextMenu() {
   });
   tb('ctxRemoveSample', () => {
     if (samples[state.bank][state.ctxPad]) {
+      deleteSample(state.bank, state.ctxPad);
       delete samples[state.bank][state.ctxPad];
       refreshPads();
       waveDraw('waveCanvas');
+      scheduleSave();
     }
     closeCtx();
   });
@@ -199,11 +202,13 @@ export function initPadSettings() {
     if (state.psPad === null) return;
     ps[state.bank][state.psPad].note = Math.max(0, ps[state.bank][state.psPad].note - 1);
     document.getElementById('psNoteDisplay').textContent = midiName(ps[state.bank][state.psPad].note);
+    scheduleSave();
   });
   tb('psNoteUp', () => {
     if (state.psPad === null) return;
     ps[state.bank][state.psPad].note = Math.min(127, ps[state.bank][state.psPad].note + 1);
     document.getElementById('psNoteDisplay').textContent = midiName(ps[state.bank][state.psPad].note);
+    scheduleSave();
   });
 
   [['psToggleReverse', 'reverse'], ['psToggleLoop', 'loop'], ['psToggleMute', 'mute'], ['psToggleSolo', 'solo']].forEach(([id, k]) => {
@@ -212,6 +217,7 @@ export function initPadSettings() {
       ps[state.bank][state.psPad][k] = !ps[state.bank][state.psPad][k];
       document.getElementById(id).classList.toggle('active', ps[state.bank][state.psPad][k]);
       if (k === 'mute') refreshPads();
+      scheduleSave();
     });
   });
 
@@ -242,7 +248,7 @@ function openRename(i) {
 function confirmRename() {
   if (state.renamePad === null) return;
   const v = document.getElementById('renameInput').value.trim().toUpperCase().slice(0, 8);
-  if (v) { padNames[state.renamePad] = v; refreshPads(); showToast('renamed → ' + v); }
+  if (v) { padNames[state.renamePad] = v; refreshPads(); showToast('renamed → ' + v); scheduleSave(); }
   document.getElementById('renameOverlay').classList.remove('show');
   state.renamePad = null;
 }
@@ -254,41 +260,53 @@ export function initRename() {
 }
 
 // ── FILE LOADING
-export function initFileInput() {
-  document.getElementById('fileInput').addEventListener('change', async e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    ensureCtx();
-    const audioCtx = getAudioCtx();
-    const target = state.ctxPad !== null ? state.ctxPad : state.activeTrack;
-    try {
-      const arrayBuf = await new Promise((res, rej) => {
-        const fr = new FileReader();
-        fr.onload = e => res(e.target.result);
-        fr.onerror = rej;
-        fr.readAsArrayBuffer(file);
-      });
-      const buf = await audioCtx.decodeAudioData(arrayBuf);
-      samples[state.bank][target] = buf;
-      // авто-переименование из имени файла
-      const autoName = file.name.replace(/\.[^.]+$/, '').toUpperCase().slice(0, 8);
-      if (autoName) padNames[target] = autoName;
-      waveDrawBuf(buf, 'waveCanvas');
-      if (state.psPad === target) waveDrawBuf(buf, 'psWaveCanvas');
-      refreshPads();
-      document.getElementById('dispMain').textContent = padNames[target];
-      document.getElementById('dispSub').textContent = file.name.slice(0, 14);
-      showToast('loaded → ' + padNames[target]);
-    } catch {
-      showToast('error: bad file');
-    }
-    e.target.value = '';
-    state.ctxPad = null;
-  });
 
+// Создаём input динамически — единственный надёжный способ на iOS Safari
+function openFilePicker(cb) {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'audio/*';
+  inp.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;opacity:0';
+  document.body.appendChild(inp);
+  inp.addEventListener('change', () => { if (inp.files[0]) cb(inp.files[0]); inp.remove(); });
+  inp.click();
+}
+
+async function loadAudioFile(file, bank, target) {
+  ensureCtx();
+  try {
+    const arrayBuf = await new Promise((res, rej) => {
+      const fr = new FileReader();
+      fr.onload = ev => res(ev.target.result);
+      fr.onerror = rej;
+      fr.readAsArrayBuffer(file);
+    });
+    saveSample(bank, target, arrayBuf.slice(0));
+    const buf = await getAudioCtx().decodeAudioData(arrayBuf);
+    samples[bank][target] = buf;
+    const autoName = file.name.replace(/\.[^.]+$/, '').toUpperCase().slice(0, 8);
+    if (autoName) padNames[target] = autoName;
+    waveDrawBuf(buf, 'waveCanvas');
+    if (state.psPad === target) waveDrawBuf(buf, 'psWaveCanvas');
+    refreshPads();
+    document.getElementById('dispMain').textContent = padNames[target];
+    document.getElementById('dispSub').textContent = file.name.slice(0, 14);
+    showToast('loaded → ' + padNames[target]);
+    scheduleSave();
+  } catch {
+    showToast('error: bad file');
+  }
+}
+
+export function openFileForPad(bank, target) {
+  openFilePicker(file => loadAudioFile(file, bank, target));
+}
+
+export function initFileInput() {
   const hint = document.getElementById('loadHint');
-  hint.addEventListener('click', () => document.getElementById('fileInput').click());
-  hint.addEventListener('touchstart', e => { e.preventDefault(); document.getElementById('fileInput').click(); }, { passive: false });
+  const open = () => openFileForPad(state.bank, state.activeTrack);
+  hint.addEventListener('click', open);
+  hint.addEventListener('touchstart', e => { e.preventDefault(); open(); }, { passive: false });
 }
 
 // ── TRANSPORT
@@ -321,12 +339,14 @@ export function toggleRecord() {
   document.getElementById('btnRec').classList.toggle('recording', state.recording);
   document.getElementById('ledRec').className = state.recording ? 'led red blink' : 'led';
   showToast(state.recording ? 'rec on' : 'rec off');
+  if (!state.recording) scheduleSave();
   buildSeq();
 }
 
 export function changeBpm(d) {
   state.bpm = Math.max(40, Math.min(220, state.bpm + d));
   document.getElementById('bpmNum').textContent = state.bpm;
+  scheduleSave();
   if (state.playing) {
     clearInterval(state.seqIv);
     state.seqIv = setInterval(tick, 60000 / state.bpm / 4);
@@ -352,6 +372,7 @@ export function setBank(b) {
   refreshPads();
   buildSeq();
   showToast('bank ' + b);
+  scheduleSave();
 }
 
 export function toggleMode(m) {

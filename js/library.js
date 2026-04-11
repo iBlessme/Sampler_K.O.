@@ -4,6 +4,7 @@ import { state, samples, padNames, N, lib } from './state.js';
 import { ensureCtx, getAudioCtx } from './audio.js';
 import { refreshPads } from './pads.js';
 import { showToast } from './toast.js';
+import { saveSample, scheduleSave } from './storage.js';
 
 const AUDIO_EXT = /\.(wav|mp3|ogg|flac|aac|m4a|aif|aiff|webm)$/i;
 const MAX_VISIBLE = 200;
@@ -334,12 +335,15 @@ function hidePicker() {
 async function loadFileToPad(fileItem, padIdx) {
   ensureCtx();
   try {
-    const file = await fileItem.getFile();
-    const buf  = await getAudioCtx().decodeAudioData(await file.arrayBuffer());
+    const file     = await fileItem.getFile();
+    const arrayBuf = await file.arrayBuffer();
+    saveSample(state.bank, padIdx, arrayBuf.slice(0));
+    const buf = await getAudioCtx().decodeAudioData(arrayBuf);
     samples[state.bank][padIdx] = buf;
     padNames[padIdx] = fileItem.name.replace(/\.[^.]+$/, '').toUpperCase().slice(0, 8);
     refreshPads();
     showToast(`pad ${padIdx + 1} ← ${padNames[padIdx]}`);
+    scheduleSave();
   } catch {
     showToast('error loading file');
   }
@@ -355,14 +359,17 @@ async function loadKit() {
   let loaded = 0;
   for (let i = 0; i < toLoad.length; i++) {
     try {
-      const file = await toLoad[i].getFile();
-      const buf  = await getAudioCtx().decodeAudioData(await file.arrayBuffer());
+      const file     = await toLoad[i].getFile();
+      const arrayBuf = await file.arrayBuffer();
+      saveSample(state.bank, i, arrayBuf.slice(0));
+      const buf = await getAudioCtx().decodeAudioData(arrayBuf);
       samples[state.bank][i] = buf;
       padNames[i] = toLoad[i].name.replace(/\.[^.]+$/, '').toUpperCase().slice(0, 8);
       loaded++;
     } catch { /* пропускаем битый файл */ }
   }
   refreshPads();
+  scheduleSave();
   hidePicker();
   closeLibrary();
   showToast(`kit loaded · ${loaded} pads`);

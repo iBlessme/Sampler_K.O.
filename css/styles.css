@@ -155,7 +155,6 @@ canvas#waveCanvas{width:100%;height:20px;display:block;position:relative;z-index
 .bottom-controls{display:flex;flex-direction:column;align-items:center;gap:3px}
 .load-hint-text{font-size:7px;color:var(--cream-dim);letter-spacing:.1em;opacity:.5;text-transform:uppercase;cursor:pointer;touch-action:manipulation;text-decoration:underline;text-underline-offset:2px}
 .load-hint-text:active{opacity:1;color:var(--orange)}
-input[type=file]{display:none}
 
 /* CONTEXT MENU */
 .ctx-overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);display:flex;align-items:center;justify-content:center;z-index:60;opacity:0;pointer-events:none;transition:opacity .18s;touch-action:none}
