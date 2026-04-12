@@ -131,7 +131,8 @@ export function initContextMenu() {
   setOpenCtx(openCtx);
 
   tb('ctxSettings', () => { const i = state.ctxPad; closeCtx(); setTimeout(() => openPS(i), 100); });
-  tb('ctxLoad',     () => { const bank = state.bank; const pad = state.ctxPad; closeCtx(); openFileForPad(bank, pad); });
+  // ctxLoad intentionally uses only click — iOS Safari blocks input.click() from touchstart
+  document.getElementById('ctxLoad').addEventListener('click', () => { const bank = state.bank; const pad = state.ctxPad; closeCtx(); openFileForPad(bank, pad); });
   tb('ctxRename',   () => { const i = state.ctxPad; closeCtx(); setTimeout(() => openRename(i), 150); });
   tb('ctxCopy',     () => {
     if (state.ctxPad === null) return;
@@ -306,9 +307,9 @@ export function openFileForPad(bank, target) {
 
 export function initFileInput() {
   const hint = document.getElementById('loadHint');
+  // loadHint intentionally uses only click — iOS Safari blocks input.click() from touchstart
   const open = () => openFileForPad(state.bank, state.activeTrack);
   hint.addEventListener('click', open);
-  hint.addEventListener('touchstart', e => { e.preventDefault(); open(); }, { passive: false });
 }
 
 // ── TRANSPORT
