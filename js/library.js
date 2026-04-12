@@ -417,8 +417,8 @@ export async function initLibrary() {
   document.getElementById('libReconnectBtn').addEventListener('touchstart', e => { e.preventDefault(); reconnectHandle(); }, { passive: false });
 
   // Открытие папки
+  // libOpenFolder intentionally uses only click — iOS Safari blocks input.click() from touchstart
   document.getElementById('libOpenFolder').addEventListener('click', pickFolder);
-  document.getElementById('libOpenFolder').addEventListener('touchstart', e => { e.preventDefault(); pickFolder(); }, { passive: false });
 
   // Refresh
   document.getElementById('libRefresh').addEventListener('click', () => switchTab(lib.activeTab));
